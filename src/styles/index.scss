@@ -1,0 +1,26 @@
+.mainBox {
+  display: flex;
+  flex-direction: row;
+  .descriptionBox {
+    margin-left: 5ch;
+    max-width: fit-content;
+    .title {
+      font-size: 500%;
+    }
+    .description {
+      font-size: 120%;
+      max-width: 65ch;
+      .ruleList {
+        margin-top: 1ch;
+        margin-bottom: 1ch;
+        margin-left: 2ch;
+      }
+    }
+    .bottomButtonGroup {
+      display: grid;
+      align-content: center;
+      justify-content: center;
+      margin-top: 2ch;
+    }
+  }
+}
