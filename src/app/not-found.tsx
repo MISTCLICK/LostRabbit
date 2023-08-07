@@ -23,6 +23,7 @@ export default function NotFound() {
         <div>⠀⠀</div>
         <Typography variant="h5">Šī lappuse neeksistē.</Typography>
       </div>
+      <br></br>
       <div>
         <Fab variant="extended" href="/">
           <Home sx={{ mr: 1 }} />

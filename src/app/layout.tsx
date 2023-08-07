@@ -5,8 +5,9 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ZPD game.",
-  description: "Just some game.",
+  title: "The Lost Rabbit",
+  description:
+    "Rīgas 80. vidusskolas 12.b klases pētnieciskā darba eksperiments programmēšanas jomā.",
 };
 
 export default function RootLayout({
