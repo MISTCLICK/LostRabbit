@@ -7,7 +7,7 @@ interface navProps {
 export default function Nav({ activeStep }: navProps) {
   return (
     <nav>
-      <Stepper activeStep={activeStep}>
+      <Stepper activeStep={activeStep} alternativeLabel>
         <Step>
           <StepLabel>Aptauja</StepLabel>
         </Step>

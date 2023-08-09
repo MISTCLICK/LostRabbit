@@ -1,3 +1,6 @@
+import Image from "next/image";
+import Rubb from "@/../../public/rubb.png";
+
 interface PlayerProps {
   width: number;
   height: number;
@@ -5,12 +8,8 @@ interface PlayerProps {
 
 export default function Player({ width, height }: PlayerProps) {
   return (
-    <div
-      style={{
-        width,
-        height,
-        backgroundColor: "red",
-      }}
-    ></div>
+    <div>
+      <Image src={Rubb} alt="Logo" width={width} height={height} />
+    </div>
   );
 }

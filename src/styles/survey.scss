@@ -1,9 +1,8 @@
-main {
+.surveyFormBody {
   width: 95vw;
-  height: 95vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  // justify-content: space-between;
   align-items: center;
   margin-top: 2vh;
 
@@ -32,10 +31,15 @@ main {
   }
 
   .surveyFoot {
-    margin-left: 6ch;
-    margin-top: 1ch;
     width: 75%;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
+    div {
+      width: 30%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+    }
   }
 }

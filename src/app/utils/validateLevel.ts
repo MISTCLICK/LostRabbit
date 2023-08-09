@@ -1,3 +1,5 @@
+import { Level } from "../types/types";
+
 export default function validateLevel(level: Level) {
   let totalLen = 0;
 

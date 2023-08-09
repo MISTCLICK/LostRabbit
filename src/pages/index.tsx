@@ -1,18 +1,16 @@
 import Image from "next/image";
-import { parseCookies, setCookie } from "nookies";
 import localFont from "next/font/local";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { Montserrat } from "next/font/google";
-import { useState } from "react";
-import {
-  Divider,
-  Chip,
-  Backdrop,
-  Card,
-  Button,
-  Checkbox,
-  FormControlLabel,
-} from "@mui/material";
+import Divider from "@mui/material/Divider";
+import { setCookie } from "nookies";
+import { v4 as uuidv4 } from "uuid";
+import redis from "@/lib/redis";
+import Terms from "@/components/terms";
+import StartButton from "@/components/startBtn";
+import { genUserToken, verifyJWT } from "@/lib/auth";
+import { InitData } from "@/app/types/types";
+import { userRepo } from "@/schema/users";
 import Rubb from "@/../../public/rubb.png";
 import "@/app/globals.css";
 import "@/styles/index.scss";
@@ -24,28 +22,55 @@ const neon = localFont({
 const montserrat = Montserrat({ subsets: ["latin"], weight: "400" });
 
 export const getServerSideProps: GetServerSideProps<InitData> = async (ctx) => {
-  const cookies = parseCookies(ctx);
+  if (ctx.req.cookies.jwtToken) {
+    const currentToken = ctx.req.cookies.jwtToken;
+    const { success, groupName, groupNum, userId } = await verifyJWT(
+      currentToken ?? " "
+    );
 
-  const init = await fetch(`${process.env.BASE_URL}/api/init`, {
-    credentials: "same-origin",
-    headers: {
-      Cookie: JSON.stringify(cookies)
-        .replace("{", "")
-        .replace("}", "")
-        .replaceAll(`"`, "")
-        .replace(":", "="),
-    },
+    if (success) {
+      setCookie(ctx, "jwtToken", currentToken, { maxAge: 86400 * 7 });
+
+      if (!(await redis.exists(`user:${userId}`))) {
+        userRepo.save(userId, {
+          userId,
+          groupNum,
+          mazeResults: [],
+          surveyAnswers: "",
+          feedbackAnswers: "",
+          iss: Date.now(),
+        });
+      }
+
+      const initData: InitData = {
+        success: true,
+        groupName,
+        groupNum,
+        userId,
+      };
+
+      return { props: initData };
+    }
+  }
+
+  const { token, groupName, groupNum, userId } = await genUserToken(uuidv4());
+  setCookie(ctx, "jwtToken", token, { maxAge: 86400 * 7 });
+  userRepo.save(userId, {
+    userId,
+    groupNum,
+    mazeResults: [],
+    surveyAnswers: "",
+    feedbackAnswers: "",
+    iss: Date.now(),
   });
 
-  const authHead = init.headers.get("set-cookie");
-  if (!authHead) throw new Error("Ir notikusi kļūda!");
+  const initData: InitData = {
+    success: true,
+    groupName,
+    groupNum,
+    userId,
+  };
 
-  if (authHead != cookies.jwtToken)
-    setCookie(ctx, "jwtToken", authHead.split("=")[1].split(";")[0], {
-      maxAge: 60 * 60 * 24,
-    });
-
-  const initData = await init.json();
   return { props: initData };
 };
 
@@ -53,9 +78,6 @@ export default function Main({
   groupName,
   userId,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const [isPrivacyOpen, setPrivacyOpen] = useState<boolean>(false);
-  const [agreedToTerms, setAgreedToTerms] = useState<boolean>(false);
-
   return (
     <main>
       <div className="mainBox">
@@ -74,7 +96,7 @@ export default function Main({
                 Eksperimenta laikā nedrīkst sazināties ar citiem dalībniekiem.
               </li>
               <li>
-                Eksperimenta laikā nedrīks atklāt citiem dalībniekiem savu
+                Eksperimenta laikā nedrīkst atklāt citiem dalībniekiem savu
                 grupas numuru vai individuālo dalībnieka numuru.
               </li>
               <li>
@@ -82,36 +104,9 @@ export default function Main({
               </li>
             </div>
             Šis eksperiments sastāv no aptaujas un labirinta spēles. <br></br>{" "}
-            Piedaloties eksperimentā, Jūs piekrītat{" "}
-            <Chip
-              label="mūsu privātuma un datu apstrādes politikai."
-              onClick={() => setPrivacyOpen(true)}
-              sx={{ fontSize: "90%" }}
-              className={`${montserrat.className}`}
-            />
-            <Backdrop
-              open={isPrivacyOpen}
-              onClick={() => setPrivacyOpen(false)}
-            >
-              <Card>privacy policy here</Card>
-            </Backdrop>
+            Piedaloties eksperimentā, Jūs piekrītat <Terms />
           </div>
-          <div className="bottomButtonGroup">
-            <FormControlLabel
-              required
-              control={
-                <Checkbox
-                  checked={agreedToTerms}
-                  onChange={() => setAgreedToTerms(!agreedToTerms)}
-                />
-              }
-              className={`${montserrat.className}`}
-              label="Es piekrītu visiem eksperimenta nosacījumiem"
-            />
-            <Button variant="outlined" disabled={!agreedToTerms} href="/survey">
-              Piedalīties eksperimentā
-            </Button>
-          </div>
+          <StartButton />
         </div>
       </div>
     </main>

@@ -1,8 +1,9 @@
+import type { NewTokenObject, InitData } from "@/app/types/types";
 import { SignJWT, jwtVerify } from "jose";
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET_KEY);
 
-export async function genUserToken(userId: string) {
+export async function genUserToken(userId: string): Promise<NewTokenObject> {
   let groupNum = Math.floor(Math.random() * 2);
   const token = await new SignJWT({
     userId,
@@ -11,7 +12,7 @@ export async function genUserToken(userId: string) {
     .setIssuedAt(Date.now())
     .setIssuer("rabbit:api:jwtservice")
     .setAudience(`rabbit:user:group${groupNum}`)
-    .setExpirationTime("1d")
+    .setExpirationTime("7d")
     .sign(secret);
 
   return {
@@ -24,6 +25,7 @@ export async function genUserToken(userId: string) {
 
 export async function verifyJWT(token: string): Promise<InitData> {
   try {
+    //@ts-ignore
     const jwtData: JWTData = await jwtVerify(token, secret, {
       issuer: "rabbit:api:jwtservice",
       requiredClaims: ["iat", "aud"],

@@ -1,0 +1,17 @@
+.levelFlexBox {
+  width: 98vw;
+  height: 98vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  nav {
+    width: 75%;
+  }
+
+  .frameFlexBox {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+}

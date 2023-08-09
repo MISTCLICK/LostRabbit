@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Player from "./player";
+import useKeyboardShortcut from "@/lib/useKeyboardShortcut";
 import validateLevel from "@/app/utils/validateLevel";
+import { Level } from "@/app/types/types";
 
 interface FrameProps {
   width: number;
@@ -17,7 +19,7 @@ export default function Frame({ level, width, height }: FrameProps) {
 
   validateLevel(level);
 
-  const [coords, setCoords] = useState<[number, number]>([0, 0]);
+  const [coords, setCoords] = useState<number[]>(level.start);
   let blockArray: number[] = [];
   let blockWidth: number = width / Math.sqrt(level.divisions);
   let blockHeight: number = height / Math.sqrt(level.divisions);
@@ -28,7 +30,7 @@ export default function Frame({ level, width, height }: FrameProps) {
     }
   }, [coords, level.finish]);
 
-  function movePlayer(shift: [number, number], layout: string[][]) {
+  function movePlayer(shift: [number, number], layout: string[][]): void {
     let newCoords: [number, number] = [
       coords[0] + shift[0],
       coords[1] + shift[1],
@@ -82,6 +84,34 @@ export default function Frame({ level, width, height }: FrameProps) {
     setCoords(newCoords);
   }
 
+  function moveUp() {
+    movePlayer([0, -1], level.layout);
+  }
+
+  function moveDown() {
+    movePlayer([0, 1], level.layout);
+  }
+
+  function moveLeft() {
+    movePlayer([-1, 0], level.layout);
+  }
+
+  function moveRight() {
+    movePlayer([1, 0], level.layout);
+  }
+
+  //Keyboard controls WASD
+  useKeyboardShortcut(["W"], moveUp);
+  useKeyboardShortcut(["S"], moveDown);
+  useKeyboardShortcut(["A"], moveLeft);
+  useKeyboardShortcut(["D"], moveRight);
+
+  //Keyboard controls ARROWS
+  useKeyboardShortcut(["ArrowUp"], moveUp);
+  useKeyboardShortcut(["ArrowDown"], moveDown);
+  useKeyboardShortcut(["ArrowLeft"], moveLeft);
+  useKeyboardShortcut(["ArrowRight"], moveRight);
+
   for (let i = 0; i < Math.sqrt(level.divisions); i++) {
     blockArray.push(i);
   }
@@ -97,42 +127,42 @@ export default function Frame({ level, width, height }: FrameProps) {
   }
 
   return (
-    <div
-      className="frame"
-      style={{
-        width: width * 1.007,
-        height: height * 1.006,
-      }}
-    >
-      {blockArray.map((row, rowId) => {
-        return (
-          <div className="row" key={`${row}`}>
-            {blockArray.map((pos, posId) => {
-              return (
-                <div
-                  className={`${getClassName(level.layout[rowId][posId])}`}
-                  key={`${row}-${pos}`}
-                  style={{
-                    width: blockWidth,
-                    height: blockHeight,
-                    fontSize: 10,
-                  }}
-                >
-                  {row === coords[0] && pos === coords[1] ? (
-                    <Player width={blockWidth} height={blockHeight}></Player>
-                  ) : (
-                    <></>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        );
-      })}
-      <button onClick={() => movePlayer([0, -1], level.layout)}>Up</button>
-      <button onClick={() => movePlayer([0, 1], level.layout)}>Down</button>
-      <button onClick={() => movePlayer([-1, 0], level.layout)}>Left</button>
-      <button onClick={() => movePlayer([1, 0], level.layout)}>Right</button>
-    </div>
+    <>
+      <div
+        className="frame"
+        style={{
+          width: width,
+          height: height,
+        }}
+      >
+        {blockArray.map((row, rowId) => {
+          return (
+            <div className="row" key={`${row}`}>
+              {blockArray.map((pos, posId) => {
+                return (
+                  <div
+                    className={`${getClassName(
+                      level.layout[rowId][posId]
+                    )} frame-block`}
+                    key={`${row}-${pos}`}
+                    style={{
+                      width: blockWidth,
+                      height: blockHeight,
+                      fontSize: 10,
+                    }}
+                  >
+                    {row === coords[0] && pos === coords[1] ? (
+                      <Player width={blockWidth} height={blockHeight}></Player>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+    </>
   );
 }

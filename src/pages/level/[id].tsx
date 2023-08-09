@@ -1,38 +1,54 @@
-import Loading from "@/app/loading";
+import type {
+  GetStaticPaths,
+  GetStaticProps,
+  InferGetStaticPropsType,
+} from "next";
+import { promises as fs } from "fs";
+import Nav from "@/components/nav";
 import Frame from "@/components/frame";
-import { useState, useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import LevelInfoCard from "@/components/levelInfoCard";
+import NotFound from "@/app/not-found";
+import { Level } from "@/app/types/types";
 import "@/app/globals.css";
+import "@/styles/level.scss";
 
-export default function Level() {
-  const [data, setData] = useState<null | Level>(null);
-  const [isLoading, setLoading] = useState<boolean>(true);
-  const pathName = usePathname();
-  const router = useRouter();
+export const getStaticPaths: GetStaticPaths = () => {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+};
 
-  useEffect(() => {
-    if (!pathName) return;
+export const getStaticProps: GetStaticProps<{
+  level: Level;
+  levelNum?: string | string[];
+}> = async (ctx) => {
+  try {
+    const data = JSON.parse(
+      await fs.readFile(`@../../public/maps/${ctx.params!.id}.json`, "utf8")
+    );
 
-    fetch(`/api${pathName}`)
-      .then((res) => res.json())
-      .then(({ data }) => {
-        setData(data);
-        setLoading(false);
-      })
-      .catch(() => {
-        router.replace("/404");
-      });
-  }, [pathName, router]);
-
-  if (isLoading) return <Loading />;
-  if (!data) {
-    router.replace("/404");
-    return <></>;
+    return { props: { level: data, levelNum: ctx.params!.id } };
+  } catch {
+    return { props: { level: { divisions: 0 }, levelNum: ctx.params!.id } };
   }
+};
+
+export default function Level({
+  level,
+  levelNum,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
+  if (level.divisions === 0) return <NotFound />;
 
   return (
     <main>
-      <Frame level={data} width={600} height={600} />
+      <div className="levelFlexBox">
+        <Nav activeStep={1} />
+        <div className="frameFlexBox">
+          <LevelInfoCard className="" levelNum={levelNum} />
+          <Frame level={level} width={700} height={700} />
+        </div>
+      </div>
     </main>
   );
 }

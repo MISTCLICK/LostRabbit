@@ -1,5 +1,13 @@
 import redis from "@/lib/redis";
-import { Schema, Repository } from "redis-om";
+import { Schema, Repository, Entity } from "redis-om";
+
+export interface User extends Entity {
+  userId: string;
+  groupNum: number;
+  mazeResults: number[];
+  questionAnswers: string[];
+  iss: number;
+}
 
 export const userSchema = new Schema(
   "user",
@@ -7,7 +15,9 @@ export const userSchema = new Schema(
     userId: { type: "string" },
     groupNum: { type: "number" },
     mazeResults: { type: "number[]" },
-    questionAnswers: { type: "string[]" },
+    surveyAnswers: { type: "string" },
+    feedbackAnswers: { type: "string" },
+    iss: { type: "number" },
   },
   {
     dataStructure: "JSON",

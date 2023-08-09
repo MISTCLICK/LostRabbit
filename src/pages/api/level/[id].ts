@@ -6,7 +6,10 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const data = JSON.parse(
-    await fs.readFile(`${process.cwd()}/src/maps/${req.query.id}.json`, "utf8")
+    await fs.readFile(
+      `${process.cwd()}/public/maps/${req.query.id}.json`,
+      "utf8"
+    )
   );
 
   res.status(200).json({ data });
