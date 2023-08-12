@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Montserrat } from "next/font/google";
 import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
@@ -7,6 +8,8 @@ import useKeyboardShortcut from "@/lib/useKeyboardShortcut";
 import validateLevel from "@/app/utils/validateLevel";
 import { Level } from "@/app/types/types";
 import { useWindowSize } from "@/lib/useWindowSize";
+import BigCarrot from "@/../../public/images/bigCarrot.png";
+
 interface FrameProps {
   level: Level;
   levelNum: string;
@@ -40,8 +43,8 @@ export default function Frame({
 
   useEffect(() => {
     if (window) {
-      if (w < 2200) setWidth(window.innerWidth * 0.35);
-      if (w >= 2200) setWidth(window.innerWidth * 0.25);
+      if (w < 2650) setWidth(window.innerWidth * 0.35);
+      if (w >= 2650) setWidth(window.innerWidth * 0.25);
     }
   }, [w]);
 
@@ -49,8 +52,10 @@ export default function Frame({
     if (coords[0] === level.finish[0] && coords[1] === level.finish[1]) {
       stopTimer();
       setFrozen(true);
+
+      //TODO data sending to the server;
     }
-  }, [coords, level.finish]);
+  }, [coords, level.finish, stopTimer]);
 
   let blockArray: number[] = [];
   let blockWidth: number = width / Math.sqrt(level.divisions);
@@ -205,12 +210,30 @@ export default function Frame({
                   Kontrolēt galveno varoni var ar WASD vai bultu taustiņām. Šī
                   konfigurācija ir atkārtota pa labi no labirinta.
                 </p>
+                <p
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image
+                    src={BigCarrot}
+                    alt="victory carrot"
+                    width={blockWidth}
+                    height={blockHeight}
+                    style={{
+                      marginRight: "2%",
+                      marginLeft: "-3%",
+                    }}
+                  />
+                  Lai pabeigtu līmeni, ir jānotiek līdz lielajam burkānam.{" "}
+                </p>{" "}
                 <Button
                   size="large"
                   variant="contained"
                   className={montserrat.className}
                   sx={
-                    w >= 1540
+                    w >= 1730
                       ? {
                           height: "10rem",
                           width: "10rem",
@@ -297,6 +320,20 @@ export default function Frame({
                         ) : (
                           <></>
                         )}
+
+                        {row === level.finish[0] &&
+                          pos === level.finish[1] &&
+                          !(
+                            coords[0] === level.finish[0] &&
+                            coords[1] === level.finish[1]
+                          ) && (
+                            <Image
+                              src={BigCarrot}
+                              alt="victory carrot"
+                              width={blockWidth}
+                              height={blockHeight}
+                            />
+                          )}
                       </div>
                     );
                   })}
