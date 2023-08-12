@@ -12,7 +12,7 @@ import { genUserToken, verifyJWT } from "@/lib/auth";
 import { InitData } from "@/app/types/types";
 import { userRepo } from "@/schema/users";
 import Rubb from "@/../../public/rubb.png";
-import "@/app/globals.css";
+import "@/styles/globals.scss";
 import "@/styles/index.scss";
 
 const neon = localFont({

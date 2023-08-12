@@ -9,7 +9,7 @@ import Frame from "@/components/frame";
 import LevelInfoCard from "@/components/levelInfoCard";
 import NotFound from "@/app/not-found";
 import { Level } from "@/app/types/types";
-import "@/app/globals.css";
+import "@/styles/globals.scss";
 import "@/styles/level.scss";
 
 export const getStaticPaths: GetStaticPaths = () => {
@@ -45,8 +45,9 @@ export default function Level({
       <div className="levelFlexBox">
         <Nav activeStep={1} />
         <div className="frameFlexBox">
-          <LevelInfoCard className="" levelNum={levelNum} />
-          <Frame level={level} width={700} height={700} />
+          <LevelInfoCard className="infoCardParent" levelNum={levelNum} />
+          <Frame level={level} />
+          <LevelInfoCard className="infoCardParent" levelNum={levelNum} />
         </div>
       </div>
     </main>

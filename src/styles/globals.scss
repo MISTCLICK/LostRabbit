@@ -1,0 +1,34 @@
+main {
+  width: 98vw;
+  height: 98vh;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+}
+
+.frame {
+  border: 2px solid black;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.frame-block {
+  box-sizing: border-box;
+}
+
+.leftBorder {
+  border-left: 1px solid black;
+}
+
+.rightBorder {
+  border-right: 1px solid black;
+}
+
+.topBorder {
+  border-top: 1px solid black;
+}
+
+.bottomBorder {
+  border-bottom: 1px solid black;
+}

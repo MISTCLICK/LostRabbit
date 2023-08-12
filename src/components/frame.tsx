@@ -1,34 +1,41 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import Player from "./player";
 import useKeyboardShortcut from "@/lib/useKeyboardShortcut";
 import validateLevel from "@/app/utils/validateLevel";
 import { Level } from "@/app/types/types";
+import { useWindowSize } from "@/lib/useWindowSize";
 
 interface FrameProps {
-  width: number;
-  height: number;
   level: Level;
 }
 
-export default function Frame({ level, width, height }: FrameProps) {
+export default function Frame({ level }: FrameProps) {
   if (Math.sqrt(level.divisions) % 1 !== 0) {
     throw "Unable to render a number of divisions that is not a square.";
   }
 
   validateLevel(level);
 
+  const [width, setWidth] = useState<number>(500);
   const [coords, setCoords] = useState<number[]>(level.start);
-  let blockArray: number[] = [];
-  let blockWidth: number = width / Math.sqrt(level.divisions);
-  let blockHeight: number = height / Math.sqrt(level.divisions);
+  const [w] = useWindowSize();
+
+  useEffect(() => {
+    if (window) {
+      if (w < 2200) setWidth(window.innerWidth * 0.35);
+      if (w >= 2200) setWidth(window.innerWidth * 0.25);
+    }
+  }, [w]);
 
   useEffect(() => {
     if (coords[0] === level.finish[0] && coords[1] === level.finish[1]) {
       console.log("YEEEEEES!");
     }
   }, [coords, level.finish]);
+
+  let blockArray: number[] = [];
+  let blockWidth: number = width / Math.sqrt(level.divisions);
+  let blockHeight: number = width / Math.sqrt(level.divisions);
 
   function movePlayer(shift: [number, number], layout: string[][]): void {
     let newCoords: [number, number] = [
@@ -132,7 +139,7 @@ export default function Frame({ level, width, height }: FrameProps) {
         className="frame"
         style={{
           width: width,
-          height: height,
+          height: width,
         }}
       >
         {blockArray.map((row, rowId) => {

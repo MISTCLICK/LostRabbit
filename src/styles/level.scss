@@ -10,8 +10,50 @@
 
   .frameFlexBox {
     height: 100%;
+
+    @media screen and (max-width: 1920px) {
+      width: 90%;
+    }
+
+    @media screen and (min-width: 1921px) and (max-width: 2309px) {
+      width: 80%;
+    }
+
+    @media screen and (min-width: 2310px) {
+      width: 70%;
+    }
+
     display: flex;
     flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
+    margin-top: 3%;
+  }
+
+  .levelInfoCard {
+    @media screen and (max-width: 1340px) {
+      width: 30ch;
+    }
+
+    @media screen and (min-width: 1341px) and (max-width: 1530px) {
+      width: 40ch;
+    }
+
+    @media screen and (min-width: 1531px) {
+      width: 50ch;
+    }
+
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+  }
+
+  .cardMember {
+    margin: 2%;
+  }
+
+  .lowMargin {
+    margin-top: -0.5%;
   }
 }
