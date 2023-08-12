@@ -1,12 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function useTimer(): [number, () => void, () => void] {
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [timerStarted, setTimerStarted] = useState<boolean>(false);
 
-  let start = 0;
-  let stop = 0;
-  let intervalId: NodeJS.Timer;
+  useEffect(() => {
+    let intervalId: NodeJS.Timer | undefined;
+    if (timerStarted) {
+      let start = Date.now();
+      intervalId = setInterval(() => {
+        setCurrentTime(Date.now() - start);
+      }, 10);
+    } else {
+      clearInterval(intervalId);
+    }
+
+    return () => clearInterval(intervalId);
+  }, [timerStarted]);
 
   function startTimer() {
     if (timerStarted)
@@ -14,11 +24,6 @@ export default function useTimer(): [number, () => void, () => void] {
         "You can't start a timer that has already been stated."
       );
 
-    start = performance.now();
-
-    intervalId = setInterval(() => {
-      setCurrentTime(performance.now() - start);
-    }, 10);
     setTimerStarted(true);
   }
 
@@ -27,12 +32,9 @@ export default function useTimer(): [number, () => void, () => void] {
       return console.error(
         "You can't stop a timer that hasn't already been stated."
       );
-
-    clearInterval(intervalId);
-    stop = performance.now();
-
-    setCurrentTime(stop - start);
     setTimerStarted(false);
+
+    setCurrentTime(currentTime);
   }
 
   return [currentTime, startTimer, stopTimer];

@@ -28,6 +28,20 @@
     justify-content: space-around;
     align-items: flex-start;
     margin-top: 3%;
+
+    .levelStartCard {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      margin-left: 5%;
+      margin-right: 5%;
+
+      @media screen and (min-width: 1540px) {
+        font-size: 1.5rem;
+      }
+    }
   }
 
   .levelInfoCard {
@@ -49,8 +63,45 @@
     justify-content: center;
   }
 
+  .keyCapsFlexBox {
+    width: 100%;
+    height: 100%;
+    display: flex;
+
+    .keysBox {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+
+      .row1-smallshift {
+        width: 100%;
+        height: 100%;
+        margin-left: 17%;
+      }
+
+      .row1-bigshift {
+        width: 100%;
+        height: 100%;
+        margin-left: 24.855%;
+      }
+
+      .row2 {
+        height: 100%;
+      }
+
+      .keyCapImage {
+        width: 25%;
+        height: 25%;
+      }
+    }
+  }
+
   .cardMember {
     margin: 2%;
+
+    .keyCapsFlexBox {
+      margin-left: 6.5%;
+    }
   }
 
   .lowMargin {

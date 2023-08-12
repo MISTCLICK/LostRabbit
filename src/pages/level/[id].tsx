@@ -5,8 +5,7 @@ import type {
 } from "next";
 import { promises as fs } from "fs";
 import Nav from "@/components/nav";
-import Frame from "@/components/frame";
-import LevelInfoCard from "@/components/levelInfoCard";
+import LevelGroup from "@/components/levelGroup";
 import NotFound from "@/app/not-found";
 import { Level } from "@/app/types/types";
 import "@/styles/globals.scss";
@@ -19,9 +18,10 @@ export const getStaticPaths: GetStaticPaths = () => {
   };
 };
 
+//@ts-expect-error
 export const getStaticProps: GetStaticProps<{
   level: Level;
-  levelNum?: string | string[];
+  levelNum: string;
 }> = async (ctx) => {
   try {
     const data = JSON.parse(
@@ -45,9 +45,7 @@ export default function Level({
       <div className="levelFlexBox">
         <Nav activeStep={1} />
         <div className="frameFlexBox">
-          <LevelInfoCard className="infoCardParent" levelNum={levelNum} />
-          <Frame level={level} />
-          <LevelInfoCard className="infoCardParent" levelNum={levelNum} />
+          <LevelGroup level={level} levelNum={levelNum} />
         </div>
       </div>
     </main>

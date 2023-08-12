@@ -164,6 +164,23 @@ export default function Survey() {
               }}
             >
               <>
+                <Box
+                  sx={{
+                    border: "5px double grey",
+                    borderRadius: "10px",
+                    width: "75ch",
+                    margin: "1.5ch",
+                  }}
+                >
+                  <div className={`${montserrat.className} q-box`}>
+                    <div className="question">
+                      Aptauja par mākslīgā intelekta izmantošanu
+                    </div>
+                    <div className="options">
+                      Šajā eksperimenta daļā jums ir jāaizpilda īsa aptauja.
+                    </div>
+                  </div>
+                </Box>
                 {surveyQuestions.map((q) => {
                   return (
                     <>

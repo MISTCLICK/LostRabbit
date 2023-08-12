@@ -1,15 +1,27 @@
+import { Montserrat } from "next/font/google";
 import { useState, useEffect } from "react";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
 import Player from "./player";
 import useKeyboardShortcut from "@/lib/useKeyboardShortcut";
 import validateLevel from "@/app/utils/validateLevel";
 import { Level } from "@/app/types/types";
 import { useWindowSize } from "@/lib/useWindowSize";
-
 interface FrameProps {
   level: Level;
+  levelNum: string;
+  startTimer: () => void;
+  stopTimer: () => void;
 }
 
-export default function Frame({ level }: FrameProps) {
+const montserrat = Montserrat({ subsets: ["latin"], weight: "400" });
+
+export default function Frame({
+  level,
+  levelNum,
+  startTimer,
+  stopTimer,
+}: FrameProps) {
   if (Math.sqrt(level.divisions) % 1 !== 0) {
     throw "Unable to render a number of divisions that is not a square.";
   }
@@ -18,6 +30,12 @@ export default function Frame({ level }: FrameProps) {
 
   const [width, setWidth] = useState<number>(500);
   const [coords, setCoords] = useState<number[]>(level.start);
+  const [frozen, setFrozen] = useState<boolean>(true);
+  const [showStartScreen, setShowStartScreen] = useState<boolean>(true);
+  const [startButtonClicked, setStartButtonClicked] = useState<boolean>(false);
+  const [startButtonText, setStartButtonText] = useState<string>(
+    parseInt(levelNum) === 1 ? "Uzsākt spēli" : "Uzsākt līmeni"
+  );
   const [w] = useWindowSize();
 
   useEffect(() => {
@@ -29,7 +47,8 @@ export default function Frame({ level }: FrameProps) {
 
   useEffect(() => {
     if (coords[0] === level.finish[0] && coords[1] === level.finish[1]) {
-      console.log("YEEEEEES!");
+      stopTimer();
+      setFrozen(true);
     }
   }, [coords, level.finish]);
 
@@ -37,7 +56,33 @@ export default function Frame({ level }: FrameProps) {
   let blockWidth: number = width / Math.sqrt(level.divisions);
   let blockHeight: number = width / Math.sqrt(level.divisions);
 
+  function handleLevelStart() {
+    if (startButtonClicked) return;
+
+    setStartButtonClicked(true);
+
+    let i = 3;
+    setStartButtonText(`${i}`);
+
+    let interval = setInterval(() => {
+      if (i > 1) {
+        i--;
+        setStartButtonText(`${i}`);
+      }
+    }, 1000);
+
+    setTimeout(() => {
+      clearInterval(interval);
+
+      setShowStartScreen(false);
+      setFrozen(false);
+      startTimer();
+    }, 3000);
+  }
+
   function movePlayer(shift: [number, number], layout: string[][]): void {
+    if (frozen) return;
+
     let newCoords: [number, number] = [
       coords[0] + shift[0],
       coords[1] + shift[1],
@@ -142,33 +187,124 @@ export default function Frame({ level }: FrameProps) {
           height: width,
         }}
       >
-        {blockArray.map((row, rowId) => {
-          return (
-            <div className="row" key={`${row}`}>
-              {blockArray.map((pos, posId) => {
-                return (
-                  <div
-                    className={`${getClassName(
-                      level.layout[rowId][posId]
-                    )} frame-block`}
-                    key={`${row}-${pos}`}
-                    style={{
-                      width: blockWidth,
-                      height: blockHeight,
-                      fontSize: 10,
-                    }}
-                  >
-                    {row === coords[0] && pos === coords[1] ? (
-                      <Player width={blockWidth} height={blockHeight}></Player>
-                    ) : (
-                      <></>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })}
+        {showStartScreen ? (
+          <Card
+            sx={{
+              width: width,
+              height: width,
+            }}
+          >
+            {parseInt(levelNum) === 1 ? (
+              <div className={`${montserrat.className} levelStartCard`}>
+                <p>Šī eksperimenta daļa sastāv no 10 labirintiem.</p>
+                <p>
+                  Pa kreisi tiks rādīta informācija par šo līmeni un laiks, kas
+                  pagājis no līmeņa sākuma.
+                </p>
+                <p>
+                  Kontrolēt galveno varoni var ar WASD vai bultu taustiņām. Šī
+                  konfigurācija ir atkārtota pa labi no labirinta.
+                </p>
+                <Button
+                  size="large"
+                  variant="contained"
+                  className={montserrat.className}
+                  sx={
+                    w >= 1540
+                      ? {
+                          height: "10rem",
+                          width: "10rem",
+                          borderRadius: "50%",
+                          backgroundColor: "#EB8EAD", //"#FFBDD3",
+                          ":hover": {
+                            backgroundColor: "#CD3669",
+                          },
+                          fontSize: "1.5rem",
+                        }
+                      : {
+                          backgroundColor: "#EB8EAD", //"#FFBDD3",
+                          ":hover": {
+                            backgroundColor: "#CD3669",
+                          },
+                        }
+                  }
+                  onClick={handleLevelStart}
+                >
+                  {startButtonText}
+                </Button>
+              </div>
+            ) : (
+              <div
+                className={`${montserrat.className} levelStartCard`}
+                style={{
+                  height: "100%",
+                }}
+              >
+                <Button
+                  size="large"
+                  variant="contained"
+                  className={montserrat.className}
+                  sx={
+                    w >= 1540
+                      ? {
+                          height: "10rem",
+                          width: "10rem",
+                          borderRadius: "50%",
+                          backgroundColor: "#EB8EAD", //"#FFBDD3",
+                          ":hover": {
+                            backgroundColor: "#CD3669",
+                          },
+                          fontSize: "1.5rem",
+                        }
+                      : {
+                          backgroundColor: "#EB8EAD", //"#FFBDD3",
+                          ":hover": {
+                            backgroundColor: "#CD3669",
+                          },
+                        }
+                  }
+                  onClick={handleLevelStart}
+                >
+                  {startButtonText}
+                </Button>
+              </div>
+            )}
+          </Card>
+        ) : (
+          <>
+            {" "}
+            {blockArray.map((row, rowId) => {
+              return (
+                <div className="row" key={`${row}`}>
+                  {blockArray.map((pos, posId) => {
+                    return (
+                      <div
+                        className={`${getClassName(
+                          level.layout[rowId][posId]
+                        )} frame-block`}
+                        key={`${row}-${pos}`}
+                        style={{
+                          width: blockWidth,
+                          height: blockHeight,
+                          fontSize: 10,
+                        }}
+                      >
+                        {row === coords[0] && pos === coords[1] ? (
+                          <Player
+                            width={blockWidth}
+                            height={blockHeight}
+                          ></Player>
+                        ) : (
+                          <></>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}{" "}
+          </>
+        )}
       </div>
     </>
   );

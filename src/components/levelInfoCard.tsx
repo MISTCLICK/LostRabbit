@@ -5,6 +5,7 @@ import { Montserrat } from "next/font/google";
 interface LevelInfoCardProps {
   className: string;
   levelNum?: string | string[];
+  currentTime: number;
 }
 
 const montserrat = Montserrat({ subsets: ["latin"], weight: "400" });
@@ -12,6 +13,7 @@ const montserrat = Montserrat({ subsets: ["latin"], weight: "400" });
 export default function LevelInfoCard({
   className,
   levelNum,
+  currentTime,
 }: LevelInfoCardProps) {
   return (
     <div className={className}>
@@ -30,7 +32,11 @@ export default function LevelInfoCard({
             justifyContent: "center",
           }}
         >
-          <h1 className={`cardMember ${montserrat.className}`}>01:00:00</h1>
+          <h1 className={`cardMember ${montserrat.className}`}>
+            {("0" + Math.floor((currentTime / 60000) % 60)).slice(-2)}:
+            {("0" + Math.floor((currentTime / 1000) % 60)).slice(-2)}:
+            {("0" + Math.floor((currentTime / 10) % 100)).slice(-2)}
+          </h1>
         </Card>
       </Card>
     </div>
