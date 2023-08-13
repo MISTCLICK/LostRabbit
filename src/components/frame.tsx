@@ -1,6 +1,8 @@
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Montserrat } from "next/font/google";
 import { useState, useEffect } from "react";
+import useSound from "use-sound";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Player from "./player";
@@ -13,6 +15,7 @@ import BigCarrot from "@/../../public/images/bigCarrot.png";
 interface FrameProps {
   level: Level;
   levelNum: string;
+  currentTime: number;
   startTimer: () => void;
   stopTimer: () => void;
 }
@@ -22,6 +25,7 @@ const montserrat = Montserrat({ subsets: ["latin"], weight: "400" });
 export default function Frame({
   level,
   levelNum,
+  currentTime,
   startTimer,
   stopTimer,
 }: FrameProps) {
@@ -36,10 +40,15 @@ export default function Frame({
   const [frozen, setFrozen] = useState<boolean>(true);
   const [showStartScreen, setShowStartScreen] = useState<boolean>(true);
   const [startButtonClicked, setStartButtonClicked] = useState<boolean>(false);
+  const [levelFinished, setLevelFinished] = useState<boolean>(false);
   const [startButtonText, setStartButtonText] = useState<string>(
     parseInt(levelNum) === 1 ? "Uzsākt spēli" : "Uzsākt līmeni"
   );
+  const [playBoopSound] = useSound("/sounds/3boops.mp3", {
+    soundEnabled: true,
+  });
   const [w] = useWindowSize();
+  const router = useRouter();
 
   useEffect(() => {
     if (window) {
@@ -49,13 +58,30 @@ export default function Frame({
   }, [w]);
 
   useEffect(() => {
-    if (coords[0] === level.finish[0] && coords[1] === level.finish[1]) {
-      stopTimer();
-      setFrozen(true);
+    (async () => {
+      if (coords[0] === level.finish[0] && coords[1] === level.finish[1]) {
+        stopTimer();
+        setFrozen(true);
 
-      //TODO data sending to the server;
-    }
-  }, [coords, level.finish, stopTimer]);
+        const res = await fetch(`/api/level/${levelNum}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            currentTime,
+            levelNum,
+          }),
+        });
+
+        if (res.status !== 200) {
+          return router.push("/");
+        }
+
+        setLevelFinished(true);
+      }
+    })();
+  }, [coords, level.finish]);
 
   let blockArray: number[] = [];
   let blockWidth: number = width / Math.sqrt(level.divisions);
@@ -68,6 +94,7 @@ export default function Frame({
 
     let i = 3;
     setStartButtonText(`${i}`);
+    playBoopSound({ forceSoundEnabled: true });
 
     let interval = setInterval(() => {
       if (i > 1) {

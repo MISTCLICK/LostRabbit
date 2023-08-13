@@ -27,9 +27,18 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
+  if (req.nextUrl.pathname.startsWith("/api")) {
+    if (!req.headers.get("referer")?.includes(process.env.BASE_URL as string)) {
+      return NextResponse.json(
+        { message: "401 Unauthorized" },
+        { status: 401 }
+      );
+    }
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/survey", "/level/:path*"],
+  matcher: ["/survey", "/level/:path*", "/api/:path*"],
 };

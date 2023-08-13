@@ -22,6 +22,7 @@ export default function LevelGroup({ level, levelNum }: LevelGroupProps) {
       <Frame
         level={level}
         levelNum={levelNum}
+        currentTime={currentTime}
         startTimer={startTimer}
         stopTimer={stopTimer}
       />

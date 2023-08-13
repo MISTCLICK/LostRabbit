@@ -1,0 +1,6 @@
+main {
+  height: 95vh;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+}

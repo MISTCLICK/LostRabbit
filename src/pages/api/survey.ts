@@ -10,6 +10,10 @@ export default async function handler(
   const answers: SurveyAnswers = req.body.answers;
   const token = req.cookies.jwtToken!;
 
+  if (!answers || req.method !== "POST") {
+    return res.status(400).json({ success: false, message: "400 Bad Request" });
+  }
+
   try {
     const userData = await verifyJWT(token);
 
