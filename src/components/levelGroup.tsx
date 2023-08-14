@@ -1,3 +1,5 @@
+"use client";
+
 import useTimer from "@/lib/useTimer";
 import Frame from "./frame";
 import ControlsInfoCard from "./controlsInfoCard";

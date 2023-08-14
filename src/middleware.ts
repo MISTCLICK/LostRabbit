@@ -12,8 +12,8 @@ export async function middleware(req: NextRequest) {
 
     if (!userData.success) return NextResponse.redirect(new URL("/", req.url));
 
-    await fetch(`${process.env.BASE_URL}/api/check-user`, {
-      method: "POST",
+    await fetch(`${process.env.BASE_URL}/api/user`, {
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },

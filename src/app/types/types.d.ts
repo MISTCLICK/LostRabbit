@@ -21,6 +21,14 @@ type InitData =
       userId: null;
     };
 
+type PageData = {
+  success: true;
+  groupName: string;
+  groupNum: number;
+  userId: string;
+  token: string;
+};
+
 interface JWTPayload {
   iat?: number | undefined;
   iss?: string | undefined;

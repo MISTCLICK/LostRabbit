@@ -1,3 +1,5 @@
+"use client";
+
 import { Chip, Backdrop, Card } from "@mui/material";
 import { Montserrat } from "next/font/google";
 import { useState } from "react";

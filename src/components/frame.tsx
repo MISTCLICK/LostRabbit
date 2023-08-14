@@ -1,7 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Montserrat } from "next/font/google";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import useSound from "use-sound";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -11,6 +13,7 @@ import validateLevel from "@/app/utils/validateLevel";
 import { Level } from "@/app/types/types";
 import { useWindowSize } from "@/lib/useWindowSize";
 import BigCarrot from "@/../../public/images/bigCarrot.png";
+import Loading from "@/app/loading";
 
 interface FrameProps {
   level: Level;
@@ -211,7 +214,7 @@ export default function Frame({
   }
 
   return (
-    <>
+    <Suspense fallback={<Loading />}>
       <div
         className="frame"
         style={{
@@ -370,6 +373,6 @@ export default function Frame({
           </>
         )}
       </div>
-    </>
+    </Suspense>
   );
 }
