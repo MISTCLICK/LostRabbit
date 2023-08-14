@@ -3,9 +3,12 @@ import { cookies } from "next/headers";
 import { Montserrat } from "next/font/google";
 import localFont from "next/font/local";
 import Divider from "@mui/material/Divider";
-import CookieParser from "cookie";
+import { v4 as uuidv4 } from "uuid";
 import Terms from "@/components/terms";
 import StartButton from "@/components/startBtn";
+import { userRepo } from "@/schema/users";
+import { genUserToken, verifyJWT } from "@/lib/auth";
+import redis from "@/lib/redis";
 import "@/styles/globals.scss";
 import "@/styles/index.scss";
 
@@ -16,25 +19,61 @@ const neon = localFont({
 const montserrat = Montserrat({ subsets: ["latin"], weight: "400" });
 
 async function getUserData() {
-  const res = await fetch(`${process.env.BASE_URL}/api/user`, {
-    method: "POST",
-    cache: "no-store",
-    headers: {
-      Cookie: `jwtToken=${cookies().get("jwtToken")?.value}`,
-      referer: `${process.env.BASE_URL}`,
-    },
+  const cookieStore = cookies();
+
+  if (cookieStore.get("jwtToken")) {
+    const currentToken = cookieStore.get("jwtToken")!.value;
+    const { success, groupName, groupNum, userId } = await verifyJWT(
+      currentToken
+    );
+
+    if (success) {
+      if (!(await redis.exists(`user:${userId}`))) {
+        userRepo.save(userId, {
+          userId,
+          groupNum,
+          mazeResults: [],
+          surveyAnswers: "",
+          feedbackAnswers: "",
+          iss: Date.now(),
+        });
+      }
+
+      const initData = {
+        success: true,
+        groupName,
+        groupNum,
+        userId,
+        token: currentToken,
+      };
+
+      return initData;
+    }
+  }
+
+  const { token, groupName, groupNum, userId } = await genUserToken(uuidv4());
+  userRepo.save(userId, {
+    userId,
+    groupNum,
+    mazeResults: [],
+    surveyAnswers: "",
+    feedbackAnswers: "",
+    iss: Date.now(),
   });
 
-  const { userId, groupName } = await res.json();
-  return {
-    userId,
+  const initData = {
+    success: true,
     groupName,
-    tokenData: CookieParser.parse(res.headers.get("Set-Cookie")!),
+    groupNum,
+    userId,
+    token,
   };
+
+  return initData;
 }
 
 export default async function Main() {
-  const { userId, groupName, tokenData } = await getUserData();
+  const { userId, groupName, token } = await getUserData();
 
   return (
     <main>
@@ -71,7 +110,7 @@ export default async function Main() {
             Šis eksperiments sastāv no aptaujas un labirinta spēles. <br></br>{" "}
             Piedaloties eksperimentā, Jūs piekrītat <Terms />
           </div>
-          <StartButton tokenData={tokenData} />
+          <StartButton token={token} />
         </div>
       </div>
     </main>

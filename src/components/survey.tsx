@@ -30,9 +30,10 @@ interface surveyQuestionObj {
 
 interface SurveyProps {
   surveyQuestions: surveyQuestionObj[];
+  type: "survey" | "feedback";
 }
 
-export default function Survey({ surveyQuestions }: SurveyProps) {
+export default function Survey({ surveyQuestions, type }: SurveyProps) {
   const [selectValue, setSelectValue] = useState<string>("");
   const [radioHelperText, setRadioHelperText] = useState<string>("");
 
@@ -86,6 +87,7 @@ export default function Survey({ surveyQuestions }: SurveyProps) {
             },
             body: JSON.stringify({
               answers,
+              type,
             }),
           });
 
@@ -175,7 +177,7 @@ export default function Survey({ surveyQuestions }: SurveyProps) {
           </div>
           <div>
             <Button type="submit" variant="outlined">
-              Turpināt
+              {type === "survey" ? "Turpināt" : "Pabeigt eksperimentu"}
             </Button>
           </div>
           <div>

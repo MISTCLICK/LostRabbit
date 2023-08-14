@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Montserrat } from "next/font/google";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import useSound from "use-sound";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -12,12 +12,12 @@ import useKeyboardShortcut from "@/lib/useKeyboardShortcut";
 import validateLevel from "@/app/utils/validateLevel";
 import { Level } from "@/app/types/types";
 import { useWindowSize } from "@/lib/useWindowSize";
-import BigCarrot from "@/../../public/images/bigCarrot.png";
 import Loading from "@/app/loading";
 
 interface FrameProps {
   level: Level;
   levelNum: string;
+  groupNum: number;
   currentTime: number;
   startTimer: () => void;
   stopTimer: () => void;
@@ -28,6 +28,7 @@ const montserrat = Montserrat({ subsets: ["latin"], weight: "400" });
 export default function Frame({
   level,
   levelNum,
+  groupNum,
   currentTime,
   startTimer,
   stopTimer,
@@ -38,14 +39,14 @@ export default function Frame({
 
   validateLevel(level);
 
-  const [width, setWidth] = useState<number>(500);
+  const [width, setWidth] = useState<number>(0);
   const [coords, setCoords] = useState<number[]>(level.start);
   const [frozen, setFrozen] = useState<boolean>(true);
   const [showStartScreen, setShowStartScreen] = useState<boolean>(true);
   const [startButtonClicked, setStartButtonClicked] = useState<boolean>(false);
   const [levelFinished, setLevelFinished] = useState<boolean>(false);
   const [startButtonText, setStartButtonText] = useState<string>(
-    parseInt(levelNum) === 1 ? "Uzsākt spēli" : "Uzsākt līmeni"
+    parseInt(levelNum) === 1 ? "Sākt spēli" : "Sākt līmeni"
   );
   const [playBoopSound] = useSound("/sounds/3boops.mp3", {
     soundEnabled: true,
@@ -62,7 +63,11 @@ export default function Frame({
 
   useEffect(() => {
     (async () => {
-      if (coords[0] === level.finish[0] && coords[1] === level.finish[1]) {
+      if (
+        coords[0] === level.finish[0] &&
+        coords[1] === level.finish[1] &&
+        !frozen
+      ) {
         stopTimer();
         setFrozen(true);
 
@@ -84,7 +89,7 @@ export default function Frame({
         setLevelFinished(true);
       }
     })();
-  }, [coords, level.finish]);
+  }, [coords]);
 
   let blockArray: number[] = [];
   let blockWidth: number = width / Math.sqrt(level.divisions);
@@ -213,33 +218,36 @@ export default function Frame({
     return className;
   }
 
+  if (width === 0) return <Loading />;
+
   return (
-    <Suspense fallback={<Loading />}>
-      <div
-        className="frame"
-        style={{
-          width: width,
-          height: width,
-        }}
-      >
-        {showStartScreen ? (
-          <Card
-            sx={{
-              width: width,
-              height: width,
-            }}
-          >
-            {parseInt(levelNum) === 1 ? (
-              <div className={`${montserrat.className} levelStartCard`}>
-                <p>Šī eksperimenta daļa sastāv no 10 labirintiem.</p>
-                <p>
-                  Pa kreisi tiks rādīta informācija par šo līmeni un laiks, kas
-                  pagājis no līmeņa sākuma.
-                </p>
-                <p>
-                  Kontrolēt galveno varoni var ar WASD vai bultu taustiņām. Šī
-                  konfigurācija ir atkārtota pa labi no labirinta.
-                </p>
+    <div
+      className="frame"
+      style={{
+        width: width,
+        height: width,
+        position: "relative",
+      }}
+    >
+      {showStartScreen ? (
+        <Card
+          sx={{
+            width: width,
+            height: width,
+          }}
+        >
+          {parseInt(levelNum) === 1 ? (
+            <div className={`${montserrat.className} levelStartCard`}>
+              <p>Šī eksperimenta daļa sastāv no 20 labirintiem.</p>
+              <p>
+                Pa kreisi tiks rādīta informācija par šo līmeni un laiks, kas
+                pagājis no līmeņa sākuma.
+              </p>
+              <p>
+                Kontrolēt galveno varoni var ar WASD vai bultu taustiņām. Šī
+                konfigurācija ir atkārtota pa labi no labirinta.
+              </p>
+              <div>
                 <p
                   style={{
                     display: "flex",
@@ -247,7 +255,7 @@ export default function Frame({
                   }}
                 >
                   <Image
-                    src={BigCarrot}
+                    src="/images/bigCarrot.png"
                     alt="victory carrot"
                     width={blockWidth}
                     height={blockHeight}
@@ -258,121 +266,186 @@ export default function Frame({
                   />
                   Lai pabeigtu līmeni, ir jānotiek līdz lielajam burkānam.{" "}
                 </p>{" "}
-                <Button
-                  size="large"
-                  variant="contained"
-                  className={montserrat.className}
-                  sx={
-                    w >= 1730
-                      ? {
-                          height: "10rem",
-                          width: "10rem",
-                          borderRadius: "50%",
-                          backgroundColor: "#EB8EAD", //"#FFBDD3",
-                          ":hover": {
-                            backgroundColor: "#CD3669",
-                          },
-                          fontSize: "1.5rem",
-                        }
-                      : {
-                          backgroundColor: "#EB8EAD", //"#FFBDD3",
-                          ":hover": {
-                            backgroundColor: "#CD3669",
-                          },
-                        }
-                  }
-                  onClick={handleLevelStart}
-                >
-                  {startButtonText}
-                </Button>
+                {groupNum === 1 && (
+                  <p
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginTop: "-3%",
+                    }}
+                  >
+                    {" "}
+                    <Image
+                      src="/images/babyCarrot.png"
+                      alt="victory carrot"
+                      width={blockWidth}
+                      height={blockHeight}
+                      style={{
+                        marginRight: "2%",
+                        marginLeft: "-3%",
+                      }}
+                    />
+                    Ja apmaldisieties, burkāni-mazulīši parādīs Jums ceļu!
+                  </p>
+                )}
               </div>
-            ) : (
-              <div
-                className={`${montserrat.className} levelStartCard`}
-                style={{
-                  height: "100%",
-                }}
+              <Button
+                size="large"
+                variant="contained"
+                className={montserrat.className}
+                sx={
+                  w >= 1875
+                    ? {
+                        height: "10rem",
+                        width: "10rem",
+                        borderRadius: "50%",
+                        backgroundColor: "#EB8EAD", //"#FFBDD3",
+                        ":hover": {
+                          backgroundColor: "#CD3669",
+                        },
+                        fontSize: "1.5rem",
+                      }
+                    : {
+                        backgroundColor: "#EB8EAD", //"#FFBDD3",
+                        ":hover": {
+                          backgroundColor: "#CD3669",
+                        },
+                      }
+                }
+                onClick={handleLevelStart}
               >
-                <Button
-                  size="large"
-                  variant="contained"
-                  className={montserrat.className}
-                  sx={
-                    w >= 1540
-                      ? {
-                          height: "10rem",
-                          width: "10rem",
-                          borderRadius: "50%",
-                          backgroundColor: "#EB8EAD", //"#FFBDD3",
-                          ":hover": {
-                            backgroundColor: "#CD3669",
-                          },
-                          fontSize: "1.5rem",
-                        }
-                      : {
-                          backgroundColor: "#EB8EAD", //"#FFBDD3",
-                          ":hover": {
-                            backgroundColor: "#CD3669",
-                          },
-                        }
-                  }
-                  onClick={handleLevelStart}
-                >
-                  {startButtonText}
-                </Button>
-              </div>
-            )}
-          </Card>
-        ) : (
-          <>
-            {" "}
-            {blockArray.map((row, rowId) => {
-              return (
-                <div className="row" key={`${row}`}>
-                  {blockArray.map((pos, posId) => {
-                    return (
-                      <div
-                        className={`${getClassName(
-                          level.layout[rowId][posId]
-                        )} frame-block`}
-                        key={`${row}-${pos}`}
-                        style={{
-                          width: blockWidth,
-                          height: blockHeight,
-                          fontSize: 10,
-                        }}
-                      >
-                        {row === coords[0] && pos === coords[1] ? (
-                          <Player
+                {startButtonText}
+              </Button>
+            </div>
+          ) : (
+            <div
+              className={`${montserrat.className} levelStartCard`}
+              style={{
+                height: "100%",
+              }}
+            >
+              <Button
+                size="large"
+                variant="contained"
+                className={montserrat.className}
+                sx={
+                  w >= 1540
+                    ? {
+                        height: "10rem",
+                        width: "10rem",
+                        borderRadius: "50%",
+                        backgroundColor: "#EB8EAD", //"#FFBDD3",
+                        ":hover": {
+                          backgroundColor: "#CD3669",
+                        },
+                        fontSize: "1.5rem",
+                      }
+                    : {
+                        backgroundColor: "#EB8EAD", //"#FFBDD3",
+                        ":hover": {
+                          backgroundColor: "#CD3669",
+                        },
+                      }
+                }
+                onClick={handleLevelStart}
+              >
+                {startButtonText}
+              </Button>
+            </div>
+          )}
+        </Card>
+      ) : (
+        <>
+          {levelFinished && (
+            <div
+              className={`${montserrat.className} levelStartCard`}
+              style={{
+                width: "90%",
+                height: "100%",
+                position: "absolute",
+              }}
+            >
+              <Button
+                size="large"
+                variant="contained"
+                className={`${montserrat.className} finishBtn`}
+                href={
+                  levelNum !== "20"
+                    ? `/level/${(parseInt(levelNum) + 1).toFixed(0)}`
+                    : `/feedback`
+                }
+                sx={
+                  w >= 1875
+                    ? {
+                        height: "10rem",
+                        width: "10rem",
+                        borderRadius: "50%",
+                        backgroundColor: "#EB8EAD", //"#FFBDD3",
+                        ":hover": {
+                          backgroundColor: "#CD3669",
+                        },
+                        fontSize: "1.5rem",
+                        textAlign: "center",
+                      }
+                    : {
+                        backgroundColor: "#EB8EAD", //"#FFBDD3",
+                        ":hover": {
+                          backgroundColor: "#CD3669",
+                        },
+                        textAlign: "center",
+                      }
+                }
+              >
+                {levelNum !== "20" ? "Uz nākamo līmeni" : "Pabeigt spēli"}
+              </Button>
+            </div>
+          )}{" "}
+          {blockArray.map((row, rowId) => {
+            return (
+              <div className="row" key={`${row}`}>
+                {blockArray.map((pos, posId) => {
+                  return (
+                    <div
+                      className={`${getClassName(
+                        level.layout[rowId][posId]
+                      )} frame-block`}
+                      key={`${row}-${pos}`}
+                      style={{
+                        width: blockWidth,
+                        height: blockHeight,
+                        fontSize: 10,
+                      }}
+                    >
+                      {row === coords[0] && pos === coords[1] ? (
+                        <Player
+                          width={blockWidth}
+                          height={blockHeight}
+                        ></Player>
+                      ) : (
+                        <></>
+                      )}
+
+                      {row === level.finish[0] &&
+                        pos === level.finish[1] &&
+                        !(
+                          coords[0] === level.finish[0] &&
+                          coords[1] === level.finish[1]
+                        ) && (
+                          <Image
+                            src="/images/bigCarrot.png"
+                            alt="victory carrot"
                             width={blockWidth}
                             height={blockHeight}
-                          ></Player>
-                        ) : (
-                          <></>
+                          />
                         )}
-
-                        {row === level.finish[0] &&
-                          pos === level.finish[1] &&
-                          !(
-                            coords[0] === level.finish[0] &&
-                            coords[1] === level.finish[1]
-                          ) && (
-                            <Image
-                              src={BigCarrot}
-                              alt="victory carrot"
-                              width={blockWidth}
-                              height={blockHeight}
-                            />
-                          )}
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })}{" "}
-          </>
-        )}
-      </div>
-    </Suspense>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}{" "}
+        </>
+      )}
+    </div>
   );
 }

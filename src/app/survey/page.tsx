@@ -101,7 +101,7 @@ export default function SurveyPage() {
             </div>
           </div>
         </Box>
-        <Survey surveyQuestions={surveyQuestions} />
+        <Survey surveyQuestions={surveyQuestions} type="survey" />
       </Box>
     </main>
   );

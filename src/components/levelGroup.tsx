@@ -9,9 +9,14 @@ import { Level } from "@/app/types/types";
 interface LevelGroupProps {
   level: Level;
   levelNum: string;
+  groupNum: number;
 }
 
-export default function LevelGroup({ level, levelNum }: LevelGroupProps) {
+export default function LevelGroup({
+  level,
+  levelNum,
+  groupNum,
+}: LevelGroupProps) {
   const [currentTime, startTimer, stopTimer] = useTimer();
   return (
     <>
@@ -24,6 +29,7 @@ export default function LevelGroup({ level, levelNum }: LevelGroupProps) {
       <Frame
         level={level}
         levelNum={levelNum}
+        groupNum={groupNum}
         currentTime={currentTime}
         startTimer={startTimer}
         stopTimer={stopTimer}

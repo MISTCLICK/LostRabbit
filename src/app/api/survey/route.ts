@@ -25,14 +25,9 @@ export async function POST(request: NextRequest) {
     const userData = await verifyJWT(token);
 
     if (!userData.success)
-      return new Response(
-        JSON.stringify({
-          success: false,
-          message: "500 Internal Server Error",
-        }),
-        {
-          status: 500,
-        }
+      return NextResponse.json(
+        { success: false, message: "400 Bad Request" },
+        { status: 400 }
       );
 
     const user = await userRepo.fetch(userData.userId);

@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { v4 as uuidv4 } from "uuid";
 import { userRepo } from "@/schema/users";
-import { genUserToken, verifyJWT } from "@/lib/auth";
 import redis from "@/lib/redis";
 
 export async function PATCH(request: NextRequest) {
@@ -41,64 +39,4 @@ export async function PATCH(request: NextRequest) {
       { status: 500 }
     );
   }
-}
-
-export async function POST(request: NextRequest) {
-  if (request.cookies.has("jwtToken")) {
-    const currentToken = request.cookies.get("jwtToken")!.value;
-    const { success, groupName, groupNum, userId } = await verifyJWT(
-      currentToken
-    );
-
-    if (success) {
-      if (!(await redis.exists(`user:${userId}`))) {
-        userRepo.save(userId, {
-          userId,
-          groupNum,
-          mazeResults: [],
-          surveyAnswers: "",
-          feedbackAnswers: "",
-          iss: Date.now(),
-        });
-      }
-
-      const initData = {
-        success: true,
-        groupName,
-        groupNum,
-        userId,
-      };
-
-      return NextResponse.json(initData, {
-        status: 200,
-        headers: {
-          "Set-Cookie": `jwtToken=${currentToken}`,
-        },
-      });
-    }
-  }
-
-  const { token, groupName, groupNum, userId } = await genUserToken(uuidv4());
-  userRepo.save(userId, {
-    userId,
-    groupNum,
-    mazeResults: [],
-    surveyAnswers: "",
-    feedbackAnswers: "",
-    iss: Date.now(),
-  });
-
-  const initData = {
-    success: true,
-    groupName,
-    groupNum,
-    userId,
-  };
-
-  return NextResponse.json(initData, {
-    status: 200,
-    headers: {
-      "Set-Cookie": `jwtToken=${token}; Max-Age=${86400 * 7}`,
-    },
-  });
 }

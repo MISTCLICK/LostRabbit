@@ -15,11 +15,11 @@
       width: 90%;
     }
 
-    @media screen and (min-width: 1921px) and (max-width: 2309px) {
+    @media screen and (min-width: 1921px) and (max-width: 2439px) {
       width: 80%;
     }
 
-    @media screen and (min-width: 2310px) {
+    @media screen and (min-width: 2440px) {
       width: 70%;
     }
 
@@ -38,12 +38,38 @@
       margin-left: 5%;
       margin-right: 5%;
 
-      @media screen and (max-width: 1050px) {
+      @media screen and (max-width: 1140px) {
         font-size: 0.8rem;
       }
 
-      @media screen and (min-width: 1540px) {
+      @media screen and (min-width: 1680px) {
         font-size: 1.5rem;
+      }
+    }
+
+    @keyframes popUp {
+      0% {
+        width: 0rem;
+        height: 0rem;
+        font-size: 0rem;
+        opacity: 0;
+      }
+      35% {
+        opacity: 0;
+      }
+      100% {
+        width: 10rem;
+        height: 10rem;
+        font-size: 1.5rem;
+        opacity: 1;
+      }
+    }
+
+    .finishBtn {
+      @media screen and (min-width: 1540px) {
+        animation-name: popUp;
+        animation-duration: 1s;
+        animation-timing-function: linear;
       }
     }
   }

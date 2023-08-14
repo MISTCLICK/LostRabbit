@@ -10,17 +10,19 @@ import { useEffect, useState } from "react";
 const montserrat = Montserrat({ subsets: ["latin"], weight: "400" });
 
 interface StartButtonProps {
-  tokenData: Record<string, string>;
+  token: string;
 }
 
-export default function StartButton({ tokenData }: StartButtonProps) {
+export default function StartButton({ token }: StartButtonProps) {
   const [agreedToTerms, setAgreedToTerms] = useState<boolean>(false);
 
   useEffect(() => {
-    setCookie("jwtToken", tokenData.jwtToken, {
-      maxAge: 604800,
-    });
-  }, [tokenData.jwtToken]);
+    if (token) {
+      setCookie("jwtToken", token, {
+        maxAge: 604800,
+      });
+    }
+  }, [token]);
 
   return (
     <div className="bottomButtonGroup">
