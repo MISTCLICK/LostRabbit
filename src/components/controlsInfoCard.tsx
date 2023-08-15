@@ -17,7 +17,7 @@ interface ControlInfoCardProps {
   className: string;
 }
 
-const montserrat = Montserrat({ subsets: ["latin"], weight: "400" });
+const montserrat = Montserrat({ subsets: ["latin-ext"], weight: "400" });
 
 export default function ControlsInfoCard({ className }: ControlInfoCardProps) {
   return (

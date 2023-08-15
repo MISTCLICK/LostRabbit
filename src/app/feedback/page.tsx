@@ -4,7 +4,7 @@ import Nav from "@/components/nav";
 import Survey from "@/components/survey";
 import "@/styles/survey.scss";
 
-const montserrat = Montserrat({ subsets: ["latin"], weight: "400" });
+const montserrat = Montserrat({ subsets: ["latin-ext"], weight: "400" });
 
 const surveyQuestions = [
   {

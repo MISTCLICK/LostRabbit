@@ -16,7 +16,7 @@ const neon = localFont({
   src: "./neon.ttf",
 });
 
-const montserrat = Montserrat({ subsets: ["latin"], weight: "400" });
+const montserrat = Montserrat({ subsets: ["latin-ext"], weight: "400" });
 
 async function getUserData() {
   const cookieStore = cookies();
@@ -107,8 +107,9 @@ export default async function Main() {
                 Eksperimenta laikā jāatbild uz visiem jautājumiem taisnīgi.
               </li>
             </div>
-            Šis eksperiments sastāv no aptaujas un labirinta spēles. <br></br>{" "}
-            Piedaloties eksperimentā, Jūs piekrītat <Terms />
+            Šis eksperiments sastāv no aptaujas un labirintu spēles. <br></br>{" "}
+            Piedaloties eksperimentā, Jūs piekrītat{" "}
+            <Terms chipText="mūsu privātuma un datu apstrādes politikai." />
           </div>
           <StartButton token={token} />
         </div>

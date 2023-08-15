@@ -5,7 +5,8 @@ export interface User extends Entity {
   userId: string;
   groupNum: number;
   mazeResults: number[];
-  questionAnswers: string[];
+  surveyAnswers: string;
+  feedbackAnswers: string;
   iss: number;
 }
 

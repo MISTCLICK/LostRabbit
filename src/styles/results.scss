@@ -1,0 +1,36 @@
+main {
+  width: 98vw;
+  height: 98vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  nav {
+    width: 75%;
+  }
+
+  .resultsPageFlexBox {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    .resultsFlexBoxMember {
+      margin: 4%;
+      margin-top: 2%;
+      height: fit-content;
+
+      .cardBody {
+        margin: 5ch;
+
+        .title {
+          font-size: 500%;
+        }
+
+        .description {
+          font-size: 120%;
+        }
+      }
+    }
+  }
+}

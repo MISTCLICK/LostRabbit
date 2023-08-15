@@ -1,6 +1,7 @@
 import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
 import { Montserrat } from "next/font/google";
+import formatTime from "@/lib/formatTime";
 
 interface LevelInfoCardProps {
   className: string;
@@ -8,7 +9,7 @@ interface LevelInfoCardProps {
   currentTime: number;
 }
 
-const montserrat = Montserrat({ subsets: ["latin"], weight: "400" });
+const montserrat = Montserrat({ subsets: ["latin-ext"], weight: "400" });
 
 export default function LevelInfoCard({
   className,
@@ -33,9 +34,7 @@ export default function LevelInfoCard({
           }}
         >
           <h1 className={`cardMember ${montserrat.className}`}>
-            {("0" + Math.floor((currentTime / 60000) % 60)).slice(-2)}:
-            {("0" + Math.floor((currentTime / 1000) % 60)).slice(-2)}:
-            {("0" + Math.floor((currentTime / 10) % 100)).slice(-2)}
+            {formatTime(currentTime)}
           </h1>
         </Card>
       </Card>

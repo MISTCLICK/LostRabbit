@@ -12,7 +12,7 @@ export default function Nav({ activeStep }: navProps) {
           <StepLabel>Aptauja</StepLabel>
         </Step>
         <Step>
-          <StepLabel>Labirinta spēle</StepLabel>
+          <StepLabel>Labirintu spēle</StepLabel>
         </Step>
         <Step>
           <StepLabel>Atgriezeniskā saite</StepLabel>

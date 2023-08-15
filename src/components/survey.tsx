@@ -19,7 +19,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import Loading from "@/app/loading";
 import "@/styles/survey.scss";
 
-const montserrat = Montserrat({ subsets: ["latin"], weight: "400" });
+const montserrat = Montserrat({ subsets: ["latin-ext"], weight: "400" });
 
 interface surveyQuestionObj {
   question: string;
@@ -94,8 +94,8 @@ export default function Survey({ surveyQuestions, type }: SurveyProps) {
           if (res.status !== 200) {
             return router.push("/");
           }
-
-          return router.push("/level/1");
+          type === "survey" ? router.push("/level/1") : router.push("/results");
+          return;
         }}
       >
         <>

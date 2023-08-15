@@ -7,7 +7,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { Montserrat } from "next/font/google";
 import { useEffect, useState } from "react";
 
-const montserrat = Montserrat({ subsets: ["latin"], weight: "400" });
+const montserrat = Montserrat({ subsets: ["latin-ext"], weight: "400" });
 
 interface StartButtonProps {
   token: string;
@@ -37,6 +37,7 @@ export default function StartButton({ token }: StartButtonProps) {
         className={`${montserrat.className}`}
         label="Es piekrītu visiem eksperimenta nosacījumiem"
       />
+
       <Button variant="outlined" disabled={!agreedToTerms} href="/survey">
         Piedalīties eksperimentā
       </Button>

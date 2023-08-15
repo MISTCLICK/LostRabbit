@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Player from "./player";
 import useKeyboardShortcut from "@/lib/useKeyboardShortcut";
-import validateLevel from "@/app/utils/validateLevel";
+import validateLevel from "@/lib/validateLevel";
 import { Level } from "@/app/types/types";
 import { useWindowSize } from "@/lib/useWindowSize";
 import Loading from "@/app/loading";
@@ -23,7 +23,7 @@ interface FrameProps {
   stopTimer: () => void;
 }
 
-const montserrat = Montserrat({ subsets: ["latin"], weight: "400" });
+const montserrat = Montserrat({ subsets: ["latin-ext"], weight: "400" });
 
 export default function Frame({
   level,

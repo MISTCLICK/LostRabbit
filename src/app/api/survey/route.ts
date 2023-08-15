@@ -9,9 +9,10 @@ export async function POST(request: NextRequest) {
   const cookieStore = cookies();
 
   const answers: SurveyAnswers = req.answers;
+  const type: "feedback" | "survey" = req.type;
   const token = cookieStore.get("jwtToken")?.value;
 
-  if (!answers || !token) {
+  if (!answers || !token || !type) {
     return NextResponse.json(
       {
         success: false,
@@ -31,7 +32,9 @@ export async function POST(request: NextRequest) {
       );
 
     const user = await userRepo.fetch(userData.userId);
-    user.surveyAnswers = JSON.stringify(answers);
+    type === "survey"
+      ? (user.surveyAnswers = JSON.stringify(answers))
+      : (user.feedbackAnswers = JSON.stringify(answers));
 
     await userRepo.save(user);
 
