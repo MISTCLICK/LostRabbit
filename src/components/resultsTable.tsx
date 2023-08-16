@@ -57,7 +57,7 @@ export default function DataTable({
               alt=""
               width={45}
               height={45}
-              style={{ marginRight: 10 }}
+              style={{ marginRight: "5px" }}
             />
           )}
           {title}
@@ -73,6 +73,9 @@ export default function DataTable({
                 align="center"
                 className={montserrat.className}
                 key={colName}
+                sx={{
+                  fontSize: "105%",
+                }}
               >
                 <h3>{colName}</h3>
               </TableCell>
@@ -83,7 +86,14 @@ export default function DataTable({
           {tableData.data.map((row, idx) => (
             <TableRow key={idx}>
               {row.map((data) => (
-                <TableCell align="center" key={data}>
+                <TableCell
+                  align="center"
+                  key={data}
+                  className={montserrat.className}
+                  sx={{
+                    fontSize: "105%",
+                  }}
+                >
                   {data}
                 </TableCell>
               ))}

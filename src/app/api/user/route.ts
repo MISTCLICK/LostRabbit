@@ -24,12 +24,14 @@ export async function PATCH(request: NextRequest) {
         surveyAnswers: "",
         feedbackAnswers: "",
         iss: Date.now(),
+        st: "default",
       });
     }
 
     return NextResponse.json(
       {
         success: true,
+        user: await userRepo.fetch(req.userId),
       },
       { status: 200 }
     );

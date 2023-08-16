@@ -17,7 +17,7 @@ export async function GET(request: NextRequest, { params }: LevelReqParams) {
   return NextResponse.json({ success: true, level: data });
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest, { params }: LevelReqParams) {
   try {
     if (!request.cookies.has("jwtToken")) {
       return NextResponse.json(
@@ -40,7 +40,46 @@ export async function POST(request: NextRequest) {
 
     //@ts-expect-error
     const user: User = await userRepo.fetch(userId);
-    user.mazeResults.push(req.currentTime);
+    user.mazeResults[parseInt(params.id) - 1] = req.currentTime;
+
+    await userRepo.save(user);
+
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch {
+    return NextResponse.json(
+      { success: false, message: "500 Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(request: NextRequest, { params }: LevelReqParams) {
+  try {
+    if (!request.cookies.has("jwtToken")) {
+      return NextResponse.json(
+        { success: false, message: "401 Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const { success, userId } = await verifyJWT(
+      request.cookies.get("jwtToken")!.value
+    );
+
+    if (!success) {
+      return NextResponse.json(
+        { success: false, message: "400 Bad Request" },
+        { status: 400 }
+      );
+    }
+
+    //@ts-expect-error
+    const user: User = await userRepo.fetch(userId);
+
+    user.mazeResults[parseInt(params.id) - 1] = 0;
+
+    user.st =
+      params.id !== "20" ? `/level/${parseInt(params.id) + 1}` : "/feedback";
 
     await userRepo.save(user);
 

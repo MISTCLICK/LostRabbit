@@ -3,6 +3,7 @@ import { promises as fs } from "fs";
 import Nav from "@/components/nav";
 import LevelGroup from "@/components/levelGroup";
 import NotFound from "@/app/not-found";
+import { User, userRepo } from "@/schema/users";
 import { verifyJWT } from "@/lib/auth";
 import { Level } from "@/app/types/types";
 import "@/styles/globals.scss";
@@ -28,16 +29,28 @@ async function getLevel(params: LevelPageParams) {
       await fs.readFile(`@../../public/maps/${params.id}.json`, "utf8")
     );
 
-    const userData = await verifyJWT(cookies().get("jwtToken")!.value);
+    const tokenData = await verifyJWT(cookies().get("jwtToken")!.value);
+    //@ts-expect-error
+    const userData: User = await userRepo.fetch(tokenData.userId!);
 
-    return { level: data, levelNum: params.id, groupNum: userData.groupNum! };
+    return {
+      level: data,
+      levelNum: params.id,
+      groupNum: tokenData.groupNum!,
+      st: userData.st,
+    };
   } catch {
-    return { level: { divisions: 0 }, levelNum: params.id, groupNum: -1 };
+    return {
+      level: { divisions: 0 },
+      levelNum: params.id,
+      groupNum: -1,
+      st: "default",
+    };
   }
 }
 
 export default async function Level({ params }: LevelPageProps) {
-  const { level, levelNum, groupNum } = await getLevel(params);
+  const { level, levelNum, groupNum, st } = await getLevel(params);
 
   if (level.divisions === 0) return <NotFound />;
 
@@ -46,7 +59,12 @@ export default async function Level({ params }: LevelPageProps) {
       <div className="levelFlexBox">
         <Nav activeStep={1} />
         <div className="frameFlexBox">
-          <LevelGroup level={level} levelNum={levelNum} groupNum={groupNum} />
+          <LevelGroup
+            level={level}
+            levelNum={levelNum}
+            groupNum={groupNum}
+            st={st}
+          />
         </div>
       </div>
     </main>

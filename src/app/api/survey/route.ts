@@ -32,10 +32,13 @@ export async function POST(request: NextRequest) {
       );
 
     const user = await userRepo.fetch(userData.userId);
-    type === "survey"
-      ? (user.surveyAnswers = JSON.stringify(answers))
-      : (user.feedbackAnswers = JSON.stringify(answers));
-
+    if (type === "survey") {
+      user.surveyAnswers = JSON.stringify(answers);
+      user.st = "/level/1";
+    } else {
+      user.feedbackAnswers = JSON.stringify(answers);
+      user.st = "/results";
+    }
     await userRepo.save(user);
 
     return NextResponse.json(

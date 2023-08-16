@@ -10,12 +10,14 @@ interface LevelGroupProps {
   level: Level;
   levelNum: string;
   groupNum: number;
+  st: string;
 }
 
 export default function LevelGroup({
   level,
   levelNum,
   groupNum,
+  st,
 }: LevelGroupProps) {
   const [currentTime, startTimer, stopTimer] = useTimer();
   return (
@@ -30,6 +32,7 @@ export default function LevelGroup({
         level={level}
         levelNum={levelNum}
         groupNum={groupNum}
+        st={st}
         currentTime={currentTime}
         startTimer={startTimer}
         stopTimer={stopTimer}

@@ -37,6 +37,19 @@ export default function LevelInfoCard({
             {formatTime(currentTime)}
           </h1>
         </Card>
+        <Divider sx={{ width: "100%" }} />
+        <h3 className={`cardMember ${montserrat.className}`}>
+          <b style={{ color: "red" }}>UZMANĪBU!</b>
+        </h3>
+        <h4
+          className={`cardMember ${montserrat.className}`}
+          style={{ textAlign: "justify" }}
+        >
+          Katram līmenim tiek dots tikai <b style={{ color: "red" }}>viens</b>{" "}
+          mēģinājums. Ja mājaslapa tiks atjaunota (refresh poga) vai citādi
+          mainīta pēc līmeņa sākuma, līmenis netiks ieskaitīts un Jūs nokļūsiet
+          nākamajā līmenī.
+        </h4>
       </Card>
     </div>
   );

@@ -1,3 +1,4 @@
+import { promises as fs } from "fs";
 import { cookies } from "next/headers";
 import NotFound from "../not-found";
 import Nav from "@/components/nav";
@@ -15,6 +16,17 @@ async function getUserData() {
     //@ts-expect-error
     const userData: User = await userRepo.fetch(tokenData.userId!);
 
+    userData.surveyAnswers = JSON.parse(userData.surveyAnswers);
+    userData.feedbackAnswers = JSON.parse(userData.feedbackAnswers);
+
+    //@ts-expect-error
+    delete userData.st;
+
+    await fs.writeFile(
+      `${process.env.DATAFILE_PATH}\\${userData.userId}.json`,
+      JSON.stringify(userData)
+    );
+
     return { ...userData };
   } catch {
     return null;
@@ -30,7 +42,7 @@ export default async function ResultsPage() {
     columns: ["Līmenis", "Laiks"],
     data: userData.mazeResults.map((val, idx) => [
       `${idx + 1}.`,
-      formatTime(val),
+      val !== 0 ? formatTime(val) : "Līmenis netika pabeigts",
     ]),
   };
 

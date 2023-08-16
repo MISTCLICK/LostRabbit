@@ -1,27 +1,39 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { verifyJWT } from "./lib/auth";
+import { User } from "./schema/users";
+import getCorrectPath from "./lib/getCorrectPath";
 
 export async function middleware(req: NextRequest) {
-  if (!req.cookies.has("jwtToken"))
+  if (!req.cookies.has("jwtToken")) {
     return NextResponse.redirect(new URL("/", req.url));
+  }
 
   try {
     const token = req.cookies.get("jwtToken");
-    const userData = await verifyJWT(token?.value!);
+    const tokenData = await verifyJWT(token?.value!);
 
-    if (!userData.success) return NextResponse.redirect(new URL("/", req.url));
+    if (!tokenData.success) return NextResponse.redirect(new URL("/", req.url));
 
-    await fetch(`${process.env.BASE_URL}/api/user`, {
+    const res = await fetch(`${process.env.BASE_URL}/api/user`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        userId: userData.userId,
-        groupNum: userData.groupNum,
+        userId: tokenData.userId,
+        groupNum: tokenData.groupNum,
       }),
     });
+
+    if (!req.nextUrl.pathname.startsWith("/api")) {
+      const { st }: User = (await res.json()).user;
+      const correctPath = getCorrectPath(req.nextUrl.pathname, st);
+
+      if (correctPath !== req.nextUrl.pathname) {
+        return NextResponse.redirect(new URL(correctPath, req.url));
+      }
+    }
   } catch (e) {
     console.error(e);
     return NextResponse.redirect(new URL("/", req.url));

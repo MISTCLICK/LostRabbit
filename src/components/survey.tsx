@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Montserrat } from "next/font/google";
 import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
@@ -12,6 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
+import TextField from "@mui/material/TextField";
 import CopyrightIcon from "@mui/icons-material/Copyright";
 import SettingsEthernetIcon from "@mui/icons-material/SettingsEthernet";
 import type { SurveyAnswers, SurveySubmitEvent } from "@/app/types/types";
@@ -38,6 +39,12 @@ export default function Survey({ surveyQuestions, type }: SurveyProps) {
   const [radioHelperText, setRadioHelperText] = useState<string>("");
 
   const router = useRouter();
+
+  useEffect(() => {
+    type === "survey"
+      ? router.prefetch("/level/1")
+      : router.prefetch("/results");
+  }, [router, type]);
 
   return (
     <Suspense fallback={<Loading />}>
@@ -92,9 +99,11 @@ export default function Survey({ surveyQuestions, type }: SurveyProps) {
           });
 
           if (res.status !== 200) {
-            return router.push("/");
+            return router.replace("/");
           }
-          type === "survey" ? router.push("/level/1") : router.push("/results");
+          type === "survey"
+            ? router.replace("/level/1")
+            : router.replace("/results");
           return;
         }}
       >
@@ -150,7 +159,7 @@ export default function Survey({ surveyQuestions, type }: SurveyProps) {
                           })}
                         </Select>
                       </>
-                    ) : (
+                    ) : q.type === "checkbox" ? (
                       <FormGroup>
                         {q.options.map((opt) => {
                           return (
@@ -164,6 +173,15 @@ export default function Survey({ surveyQuestions, type }: SurveyProps) {
                           );
                         })}
                       </FormGroup>
+                    ) : (
+                      <TextField
+                        fullWidth
+                        multiline
+                        variant="outlined"
+                        sx={montserrat.style}
+                        type="text"
+                        name={q.name}
+                      />
                     )}
                   </div>
                 </div>

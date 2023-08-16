@@ -37,7 +37,7 @@ export default function Terms({ chipText }: { chipText: string }) {
               <h2>1. Vispārīgi noteikumi</h2>{" "}
               <IconButton
                 aria-label="close"
-                sx={{ marginTop: "-3.5%", marginRight: "-2.4%" }}
+                sx={{ marginTop: "-2.2%", marginRight: "-1.9%" }}
                 size="large"
                 onClick={() => setPrivacyOpen(false)}
               >
@@ -82,7 +82,7 @@ export default function Terms({ chipText }: { chipText: string }) {
             <br />
 
             <p>
-              2.2. Eksperiments sastāv no divām aptaujām un labirinta spēles.
+              2.2. Eksperiments sastāv no divām aptaujām un labirintu spēles.
               Piedaloties eksperimentā, eskperimenta dalībnieks piekrīt taisnīgi
               atbildēt uz visiem aptauju jautājumiem.
             </p>
@@ -111,10 +111,9 @@ export default function Terms({ chipText }: { chipText: string }) {
           <div className="privacyTextBlock shiftUp">
             <h2>4. Eksperimenta dalībnieka tiesības un datu glabāšana</h2>
             <p>
-              4.1. Eksperimenta dalībniekam ir daļējas piekļuves tiesības
-              savāktiem personas datiem. Visi savākti dati, izņēmot atbildes uz
-              aptauju jautājumiem tiks rādīti eksperimenta dalībniekam pēc
-              eksperimenta beigām.
+              4.1. Eksperimenta dalībniekam ir pilnas piekļuves tiesības
+              savāktiem personas datiem. Visi savākti dati tiks rādīti
+              eksperimenta dalībniekam pēc eksperimenta beigām.
             </p>
             <br />
             <p>

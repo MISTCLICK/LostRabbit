@@ -34,7 +34,7 @@ const surveyQuestions = [
   {
     question: "jautājums5??",
     options: ["0", "1", "2", "3", "4", "5"],
-    type: "radio",
+    type: "input",
     name: "aiQuestion5",
   },
 ];

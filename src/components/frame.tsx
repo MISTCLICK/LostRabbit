@@ -18,6 +18,7 @@ interface FrameProps {
   level: Level;
   levelNum: string;
   groupNum: number;
+  st: string;
   currentTime: number;
   startTimer: () => void;
   stopTimer: () => void;
@@ -29,6 +30,7 @@ export default function Frame({
   level,
   levelNum,
   groupNum,
+  st,
   currentTime,
   startTimer,
   stopTimer,
@@ -83,13 +85,19 @@ export default function Frame({
         });
 
         if (res.status !== 200) {
-          return router.push("/");
+          return router.replace("/");
         }
 
         setLevelFinished(true);
       }
     })();
   }, [coords]);
+
+  useEffect(() => {
+    router.prefetch(
+      st.startsWith("/level") ? `/level/${parseInt(levelNum) + 1}` : `/feedback`
+    );
+  }, [router, st]);
 
   let blockArray: number[] = [];
   let blockWidth: number = width / Math.sqrt(level.divisions);
@@ -111,12 +119,16 @@ export default function Frame({
       }
     }, 1000);
 
-    setTimeout(() => {
+    setTimeout(async () => {
       clearInterval(interval);
 
       setShowStartScreen(false);
       setFrozen(false);
       startTimer();
+
+      await fetch(`/api/level/${levelNum}`, {
+        method: "PATCH",
+      }).catch(() => router.replace("/"));
     }, 3000);
   }
 
@@ -369,10 +381,12 @@ export default function Frame({
                 size="large"
                 variant="contained"
                 className={`${montserrat.className} finishBtn`}
-                href={
-                  levelNum !== "20"
-                    ? `/level/${(parseInt(levelNum) + 1).toFixed(0)}`
-                    : `/feedback`
+                onClick={() =>
+                  router.replace(
+                    levelNum !== "20"
+                      ? `/level/${(parseInt(levelNum) + 1).toFixed(0)}`
+                      : `/feedback`
+                  )
                 }
                 sx={
                   w >= 1875

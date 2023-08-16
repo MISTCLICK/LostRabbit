@@ -8,6 +8,7 @@ export interface User extends Entity {
   surveyAnswers: string;
   feedbackAnswers: string;
   iss: number;
+  st: string;
 }
 
 export const userSchema = new Schema(
@@ -19,6 +20,7 @@ export const userSchema = new Schema(
     surveyAnswers: { type: "string" },
     feedbackAnswers: { type: "string" },
     iss: { type: "number" },
+    st: { type: "string" },
   },
   {
     dataStructure: "JSON",

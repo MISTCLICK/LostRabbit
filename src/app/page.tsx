@@ -28,14 +28,17 @@ async function getUserData() {
     );
 
     if (success) {
-      if (!(await redis.exists(`user:${userId}`))) {
-        userRepo.save(userId, {
+      const inDb = await redis.exists(`user:${userId}`);
+
+      if (!inDb) {
+        await userRepo.save(userId, {
           userId,
           groupNum,
           mazeResults: [],
           surveyAnswers: "",
           feedbackAnswers: "",
           iss: Date.now(),
+          st: "default",
         });
       }
 
@@ -45,6 +48,7 @@ async function getUserData() {
         groupNum,
         userId,
         token: currentToken,
+        st: inDb ? (await userRepo.fetch(userId)).st : "default",
       };
 
       return initData;
@@ -52,13 +56,14 @@ async function getUserData() {
   }
 
   const { token, groupName, groupNum, userId } = await genUserToken(uuidv4());
-  userRepo.save(userId, {
+  await userRepo.save(userId, {
     userId,
     groupNum,
     mazeResults: [],
     surveyAnswers: "",
     feedbackAnswers: "",
     iss: Date.now(),
+    st: "default",
   });
 
   const initData = {
@@ -67,13 +72,14 @@ async function getUserData() {
     groupNum,
     userId,
     token,
+    st: "default",
   };
 
   return initData;
 }
 
 export default async function Main() {
-  const { userId, groupName, token } = await getUserData();
+  const { userId, groupName, token, st } = await getUserData();
 
   return (
     <main>
@@ -111,7 +117,8 @@ export default async function Main() {
             Piedaloties eksperimentā, Jūs piekrītat{" "}
             <Terms chipText="mūsu privātuma un datu apstrādes politikai." />
           </div>
-          <StartButton token={token} />
+          {/*@ts-expect-error */}
+          <StartButton token={token} st={st} />
         </div>
       </div>
     </main>
