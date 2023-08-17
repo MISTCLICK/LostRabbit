@@ -18,7 +18,7 @@ interface LevelPageProps {
 }
 
 export async function generateStaticParams() {
-  const levels = await fs.readdir("@../../public/maps/");
+  const levels = await fs.readdir(`${process.cwd()}/public/maps/`);
 
   return levels.map((fileName) => ({ id: fileName.charAt(0) }));
 }
@@ -26,7 +26,10 @@ export async function generateStaticParams() {
 async function getLevel(params: LevelPageParams) {
   try {
     const data = JSON.parse(
-      await fs.readFile(`@../../public/maps/${params.id}.json`, "utf8")
+      await fs.readFile(
+        `${process.cwd()}/public/maps/${params.id}.json`,
+        "utf8"
+      )
     );
 
     const tokenData = await verifyJWT(cookies().get("jwtToken")!.value);

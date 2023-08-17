@@ -40,12 +40,6 @@ export default function Survey({ surveyQuestions, type }: SurveyProps) {
 
   const router = useRouter();
 
-  useEffect(() => {
-    type === "survey"
-      ? router.prefetch("/level/1")
-      : router.prefetch("/results");
-  }, [router, type]);
-
   return (
     <Suspense fallback={<Loading />}>
       <form
@@ -98,7 +92,7 @@ export default function Survey({ surveyQuestions, type }: SurveyProps) {
             }),
           });
 
-          if (res.status !== 200) {
+          if (!res.ok) {
             return router.replace("/");
           }
           type === "survey"

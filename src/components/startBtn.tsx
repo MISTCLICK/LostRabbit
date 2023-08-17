@@ -26,9 +26,7 @@ export default function StartButton({ token, st }: StartButtonProps) {
         maxAge: 604800,
       });
     }
-
-    router.prefetch(st === "default" ? "/survey" : st);
-  }, [router, st, token]);
+  }, [token]);
 
   return (
     <div className="bottomButtonGroup">

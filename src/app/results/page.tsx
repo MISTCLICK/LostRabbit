@@ -1,4 +1,3 @@
-import { promises as fs } from "fs";
 import { cookies } from "next/headers";
 import NotFound from "../not-found";
 import Nav from "@/components/nav";
@@ -21,11 +20,6 @@ async function getUserData() {
 
     //@ts-expect-error
     delete userData.st;
-
-    await fs.writeFile(
-      `${process.env.DATAFILE_PATH}\\${userData.userId}.json`,
-      JSON.stringify(userData)
-    );
 
     return { ...userData };
   } catch {

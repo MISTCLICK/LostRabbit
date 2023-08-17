@@ -91,13 +91,7 @@ export default function Frame({
         setLevelFinished(true);
       }
     })();
-  }, [coords]);
-
-  useEffect(() => {
-    router.prefetch(
-      st.startsWith("/level") ? `/level/${parseInt(levelNum) + 1}` : `/feedback`
-    );
-  }, [router, st]);
+  }, [coords, currentTime, frozen, level.finish, levelNum, router, stopTimer]);
 
   let blockArray: number[] = [];
   let blockWidth: number = width / Math.sqrt(level.divisions);
@@ -122,13 +116,13 @@ export default function Frame({
     setTimeout(async () => {
       clearInterval(interval);
 
-      setShowStartScreen(false);
-      setFrozen(false);
-      startTimer();
-
       await fetch(`/api/level/${levelNum}`, {
         method: "PATCH",
       }).catch(() => router.replace("/"));
+
+      setShowStartScreen(false);
+      setFrozen(false);
+      startTimer();
     }, 3000);
   }
 
