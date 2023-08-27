@@ -7,6 +7,13 @@ type Level = {
   divisions: number;
 };
 
+type NewLevel = {
+  layout: number[][][];
+  start: number[];
+  finish: number[];
+  divisions: number;
+};
+
 type InitData =
   | {
       success: true;

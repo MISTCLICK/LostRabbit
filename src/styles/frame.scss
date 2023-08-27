@@ -7,34 +7,35 @@ main {
 }
 
 .frame {
-  // border: 2px solid black;
+  border: 2px solid black;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
 }
 
-.row {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
+// .row {
+//   display: flex;
+//   flex-direction: row;
+//   flex-wrap: wrap;
+// }
 
 .frame-block {
   box-sizing: border-box;
+  border: 1px solid black;
 }
 
 .leftBorder {
-  border-left: 1px solid black;
+  border-left: 0;
 }
 
 .rightBorder {
-  border-right: 1px solid black;
+  border-right: 0;
 }
 
 .topBorder {
-  border-top: 1px solid black;
+  border-top: 0;
 }
 
 .bottomBorder {
-  border-bottom: 1px solid black;
+  border-bottom: 0;
 }
