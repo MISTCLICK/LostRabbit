@@ -20,11 +20,9 @@ export default function StartButton({ token, st }: StartButtonProps) {
   const router = useRouter();
 
   useEffect(() => {
-    if (token) {
-      setCookie("jwtToken", token, {
-        maxAge: 604800,
-      });
-    }
+    setCookie("jwtToken", token, {
+      maxAge: 604800,
+    });
   }, [token]);
 
   return (

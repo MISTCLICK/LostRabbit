@@ -8,34 +8,33 @@ const montserrat = Montserrat({ subsets: ["latin-ext"], weight: "400" });
 
 const surveyQuestions = [
   {
-    question: "jautājums1??",
-    options: ["0", "1", "2", "3", "4", "5"],
-    type: "dropdown",
-    name: "aiQuestion1",
-  },
-  {
-    question: "jautājums2??",
-    options: ["0", "1", "2", "3", "4", "5"],
+    question: "Novērtējiet spēles sarežģītumu!",
+    options: ["Ļoti viegli", "Viegli", "Izaicinoši", "Grūti", "Ļoti grūti"],
     type: "radio",
-    name: "aiQuestion2",
+    name: "feedbackComplexityQuestion",
   },
   {
-    question: "jautājums3??",
-    options: ["0", "1", "2", "3", "4", "5"],
+    question: "Kuriem no šiem apgalvojumiem Jūs piekrītat?",
+    options: [
+      "Eksperimenta gaitā man bija nepieciešama ārēja palīdzība",
+      "Eksperimenta gaita bija saprotama un vienkārša",
+      "Es sapratu AI izmantošanas ideju problēmu risināšanai",
+    ],
     type: "checkbox",
-    name: "aiQuestion3",
+    name: "feedbackStatementsQuestion",
   },
   {
-    question: "jautājums4??",
-    options: ["0", "1", "2", "3", "4", "5"],
+    question: "Cik interesanti jums bija piedalīties eksperimentā?",
+    options: ["Ļoti interesanti", "Interesanti", "Neinteresanti", "Garlaicīgi"],
     type: "radio",
-    name: "aiQuestion4",
+    name: "feedbackComplexityQuestion",
   },
   {
-    question: "jautājums5??",
-    options: ["0", "1", "2", "3", "4", "5"],
+    question:
+      "Vai Jūs gribētu kaut ko piebilst? Jūsu viedoklis ir patiešām svarīgs!",
+    options: [],
     type: "input",
-    name: "aiQuestion5",
+    name: "feedbackFreeInputQuestion",
   },
 ];
 

@@ -34,7 +34,7 @@ async function getUserData() {
         await userRepo.save(userId, {
           userId,
           groupNum,
-          mazeResults: [],
+          mazeResults: new Array(20).fill(0),
           surveyAnswers: "",
           feedbackAnswers: "",
           iss: Date.now(),
@@ -59,7 +59,7 @@ async function getUserData() {
   await userRepo.save(userId, {
     userId,
     groupNum,
-    mazeResults: [],
+    mazeResults: new Array(20).fill(0),
     surveyAnswers: "",
     feedbackAnswers: "",
     iss: Date.now(),

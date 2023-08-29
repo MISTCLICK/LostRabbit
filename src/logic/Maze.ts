@@ -1,4 +1,3 @@
-import { SetStateAction } from "react";
 import { NewLevel } from "@/app/types/types";
 import Point from "./Point";
 
@@ -21,7 +20,8 @@ export default class Maze {
   generating: boolean = false;
   solving: boolean = false;
   solved: boolean = false;
-  level?: any;
+  level?: NewLevel;
+  generated: boolean = false;
 
   constructor(options: MazeOptions) {
     this.bounds = options.size;
@@ -46,6 +46,8 @@ export default class Maze {
     }
 
     if (options.level) this.level = options.level;
+
+    this.init();
   }
 
   createBlock(p: Point, open: number[]) {
@@ -76,7 +78,7 @@ export default class Maze {
     return this.getBlock(this.position);
   }
 
-  clear() {
+  private init() {
     if (this.generating || this.solving) {
       return false;
     }
@@ -91,7 +93,7 @@ export default class Maze {
     }
   }
 
-  getAdjacents(p: Point, visitedSet: Set<number[]>) {
+  getAdjacents(p: Point, visitedSet: number[][]) {
     let adjacents = [];
 
     for (let i = 0; i < this.delta.length; i++) {
@@ -99,7 +101,10 @@ export default class Maze {
       cp.side = this.sides[i];
       cp.oppositeSide = this.oppositeSides[i];
 
-      if (cp.insideBounds(this.bounds) && !visitedSet.has([cp.x, cp.y])) {
+      if (
+        cp.insideBounds(this.bounds) &&
+        !visitedSet.some((i) => i[0] === cp.x && i[1] === cp.y)
+      ) {
         adjacents.push(cp);
       }
     }
@@ -118,32 +123,32 @@ export default class Maze {
   }
 
   generate() {
+    // if (this.generated) return;
+
     let divisions = this.bounds.x * this.bounds.y;
     let stack = [];
-    let visitedSet = new Set<number[]>();
+    let visitedList: number[][] = [];
     let start = this.start;
     stack.push(start);
 
     let i = 0;
-    while (visitedSet.size < divisions) {
+    while (visitedList.length < divisions) {
       let point = stack[stack.length - 1];
       let ps = [point.x, point.y];
       let block = this.getBlock(point);
 
-      block.classList.add("current");
-
-      if (!visitedSet.has(ps)) {
-        visitedSet.add(ps);
+      if (!visitedList.some((i) => i[0] === ps[0] && i[1] === ps[1])) {
+        visitedList.push(ps);
         block.index = i;
         block.classList.add("generated");
         i++;
       }
 
-      let adjacents = this.getAdjacents(point, visitedSet);
+      let adjacents = this.getAdjacents(point, visitedList);
 
       if (adjacents.length === 0) {
-        stack.pop();
-        return;
+        point = stack.pop()!;
+        continue;
       }
 
       let rand = Math.floor(Math.random() * adjacents.length);
@@ -156,9 +161,26 @@ export default class Maze {
 
       adjBlock.classList.add(np.oppositeSide + "Border");
       adjBlock.open[np.oppositeSide] = true;
-
-      block.classList.delete("current");
     }
+
+    this.generated = true;
+
+    return {
+      layout: this.blocks.map((row) => {
+        return row.map((block: any) => {
+          let open = [];
+
+          for (let side in block.open) {
+            open.push(block.open[side] ? 0 : 1);
+          }
+
+          return open;
+        });
+      }),
+      start: [this.start.x, this.start.y],
+      finish: [this.targetPosition.x, this.targetPosition.y],
+      divisions: this.blocks.length * this.blocks[0].length,
+    };
   }
 
   solve(currentPos: Point) {

@@ -3,13 +3,16 @@ import { promises as fs } from "fs";
 import FrameSandbox from "@/components/frameSandbox";
 import { verifyJWT } from "@/lib/auth";
 import { User, userRepo } from "@/schema/users";
+import Maze from "@/logic/Maze";
+import Point from "@/logic/Point";
 // import "@/styles/globals.scss";
 import "@/styles/level.scss";
 
+//! DEPRECATED STATIC LEVEL LOADING;
 async function getLevel() {
   try {
     const data = JSON.parse(
-      await fs.readFile(`${process.cwd()}/public/maps/_7.json`, "utf8")
+      await fs.readFile(`${process.cwd()}/public/maps/_10.json`, "utf8")
     );
 
     const tokenData = await verifyJWT(cookies().get("jwtToken")!.value);
@@ -18,7 +21,7 @@ async function getLevel() {
 
     return {
       level: data,
-      levelNum: "1",
+      levelNum: "10",
       groupNum: tokenData.groupNum!,
       st: userData.st,
     };
@@ -33,9 +36,12 @@ async function getLevel() {
 }
 
 export default async function SandBoxPage() {
-  const { level } = await getLevel();
-
-  if (level.divisions === 0) throw "ERROR LOADING LEVEL.";
+  const maze = new Maze({
+    size: new Point(40, 40),
+    start: new Point(0, 0),
+    // targetPosition: new Point(19, 10),
+  });
+  const level = maze.generate();
 
   return (
     <main>

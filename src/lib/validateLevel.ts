@@ -1,6 +1,6 @@
-import { Level } from "../app/types/types";
+import { NewLevel } from "../app/types/types";
 
-export default function validateLevel(level: Level) {
+export default function validateLevel(level: NewLevel) {
   let totalLen = 0;
 
   level.layout.forEach((e) => (totalLen += e.length));

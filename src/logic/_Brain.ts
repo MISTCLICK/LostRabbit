@@ -1,8 +1,9 @@
 import * as tf from "@tensorflow/tfjs";
 // import { promises as fs } from "fs";
 import type { SetStateAction } from "react";
-import { Level } from "@/app/types/types";
+import { NewLevel } from "@/app/types/types";
 import LevelContainer from "./LevelContainer";
+import Point from "./Point";
 
 export function getRandomDirection(possibleDirections: any[]): any {
   return possibleDirections[
@@ -11,15 +12,15 @@ export function getRandomDirection(possibleDirections: any[]): any {
 }
 
 export function getPossibleDirections(
-  layout: string[][],
+  layout: number[][][],
   coords: number[]
 ): number[] {
   let possibleDirections: number[] = [];
 
-  if (!layout[coords[0]][coords[1]].includes("T")) possibleDirections.push(0);
-  if (!layout[coords[0]][coords[1]].includes("B")) possibleDirections.push(1);
-  if (!layout[coords[0]][coords[1]].includes("L")) possibleDirections.push(2);
-  if (!layout[coords[0]][coords[1]].includes("R")) possibleDirections.push(3);
+  if (!layout[coords[0]][coords[1]][2]) possibleDirections.push(2);
+  if (!layout[coords[0]][coords[1]][0]) possibleDirections.push(0);
+  if (!layout[coords[0]][coords[1]][3]) possibleDirections.push(3);
+  if (!layout[coords[0]][coords[1]][1]) possibleDirections.push(1);
 
   return possibleDirections;
 }
@@ -52,7 +53,8 @@ export class BrainLog {
 
   predict(state: any) {
     const res = tf.tidy(() => {
-      const pred = this.model.predict(tf.tensor2d(state, [state.length, 1]));
+      console.log(state);
+      const pred = this.model.predict(tf.tensor2d(state, [state.length, 0]));
       return pred;
     });
     return res;
@@ -72,8 +74,12 @@ export class BrainLog {
     const memorySize = this.memory.length;
     dataSize = Math.min(memorySize, dataSize);
 
-    let inputs = new Array(dataSize).fill(new Array(envSize).fill(0));
-    let targets = new Array(dataSize).fill(new Array(this.numActions).fill(0));
+    let inputs = new Array(dataSize).fill(
+      new Array(envSize).fill(new Array(4).fill(0))
+    );
+    let targets = new Array(dataSize).fill(
+      new Array(this.numActions).fill(new Array(4).fill(0))
+    );
 
     this.randomChoices(new Array(memorySize).fill(0), dataSize).forEach(
       (i, idx) => {
@@ -100,14 +106,14 @@ export class BrainLog {
 
 export class QBrain {
   model: tf.Sequential;
-  level: Level;
+  level: NewLevel;
   levelContainer: LevelContainer;
 
   epsilon: number = 0.1;
   minReward: number = -0.5 * 30;
   totalReward: number = 0;
 
-  constructor(level: Level, levelContainer: LevelContainer) {
+  constructor(level: NewLevel, levelContainer: LevelContainer) {
     this.model = tf.sequential();
     this.level = level;
     this.levelContainer = levelContainer;
@@ -115,14 +121,14 @@ export class QBrain {
     this.model.add(
       tf.layers.dense({
         units: level.layout.length * level.layout[0].length,
-        inputShape: [1, 225],
+        inputShape: [1, 400],
         activation: "relu",
       })
     );
     this.model.add(
       tf.layers.dense({
         units: level.layout.length * level.layout[0].length,
-        inputShape: [1, 225],
+        inputShape: [1, 400],
         activation: "relu",
       })
     );
@@ -150,7 +156,7 @@ export class QBrain {
     return serializedLevel;
   }
 
-  async trainModel(setCoords: (value: SetStateAction<number[]>) => void) {
+  async trainModel(setCoords: (value: SetStateAction<Point>) => void) {
     const nEpoch = 15000;
     const maxMem = 1000;
     const dataSize = 50;
@@ -169,7 +175,7 @@ export class QBrain {
       ];
       let coords = startCoords;
 
-      setCoords(startCoords);
+      setCoords(new Point(startCoords[0], startCoords[1]));
 
       let gameOver = false;
       let state = this.serializeLevel(coords);
@@ -202,22 +208,22 @@ export class QBrain {
 
         switch (action) {
           case 0:
-            setCoords((prev) => [prev[0], prev[1] - 1]);
+            setCoords((prev) => new Point(prev.x, prev.y - 1));
             this.levelContainer.playerCoords = [coords[0], coords[1] - 1];
             coords = this.levelContainer.playerCoords;
             break;
           case 1:
-            setCoords((prev) => [prev[0], prev[1] + 1]);
+            setCoords((prev) => new Point(prev.x, prev.y + 1));
             this.levelContainer.playerCoords = [coords[0], coords[1] + 1];
             coords = this.levelContainer.playerCoords;
             break;
           case 2:
-            setCoords((prev) => [prev[0] - 1, prev[1]]);
+            setCoords((prev) => new Point(prev.x - 1, prev.y));
             this.levelContainer.playerCoords = [coords[0] - 1, coords[1]];
             coords = this.levelContainer.playerCoords;
             break;
           case 3:
-            setCoords((prev) => [prev[0] + 1, prev[1]]);
+            setCoords((prev) => new Point(prev.x + 1, prev.y));
             this.levelContainer.playerCoords = [coords[0] + 1, coords[1]];
             coords = this.levelContainer.playerCoords;
             break;
@@ -294,7 +300,7 @@ export class QBrain {
   }
 
   getReward(
-    level: Level,
+    level: NewLevel,
     coords: number[],
     action: 0 | 1 | 2 | 3,
     visitedList: number[][]

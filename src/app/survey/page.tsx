@@ -47,26 +47,72 @@ const surveyQuestions = [
   {
     question: "Ar kādiem AI algoritmiem Jums ir pieredze?",
     options: [
-      "LLM (Large Language Models)",
-      "Mašīnmācīšanās (Machine learning)",
-      "AI bez mācību datiem",
-      "ADP / Adaptive ADP",
+      "LLM (Large Language Models) / NLP (Natural Language Processing) (piem. ChatGPT, c.ai, Siri, Ok Google u.c.)",
+      "Mašīnmācīšanās (Machine learning) / Dziļā mācīšanās (Deep Learning) (piem. TensorFlow u.c.)",
+      "ADP / Adaptive ADP (piem. Tesla Autopilot u.c.)",
       "Ar nekādiem no minētajiem",
     ],
     type: "checkbox",
     name: "aiTypesQuestion",
   },
   {
-    question: "jautājums4??",
-    options: ["0", "1", "2", "3", "4", "5"],
+    question: "Vai Jūs izmantojāt AI palīdzību ikdienā?",
+    options: ["Jā", "Nē"],
     type: "radio",
-    name: "aiQuestion4",
+    name: "aiEverydayUseQuestion",
   },
   {
-    question: "jautājums5??",
-    options: ["0", "1", "2", "3", "4", "5"],
+    question: "Vai Jūs uzskatāt, ka AI var izmantot kā palīgu jebkādam darbam?",
+    options: ["Jā", "Nē"],
     type: "radio",
-    name: "aiQuestion5",
+    name: "aiHelpQuestion",
+  },
+  {
+    question: "Kādiem mērķiem Jums noderēja AI palīdzība?",
+    options: [
+      "Gudrās mājas automatizācija",
+      "Darba pienākumu / mājas darbu pildīšana",
+      "Informācijas meklēšana",
+      "Programmēšana",
+      "Atpūta (jebkāda)",
+    ],
+    type: "checkbox",
+    name: "aiAimsQuestion",
+  },
+  {
+    question:
+      "Vai Jūs uzskatāt, ka AI ir tehnoloģija, kas ir būtiska cilvēcības tehnoloģiskajai attīstībai?",
+    options: ["Jā", "Nē"],
+    type: "radio",
+    name: "aiFutureQuestion",
+  },
+  {
+    question:
+      "Vai Jūs uzskatāt, ka AI ir spējīgs aizvietot kādas no šīm profesijām?",
+    options: [
+      "Skolotājs (-ja)",
+      "Programmētājs (-ja)",
+      "Sabiedriskā transporta vadītājs (-ja)",
+      "Mākslinieks (-ce)",
+      "Tiesnesis (-se) / Advokāts (-e)",
+      "Uzņēmuma valdes loceklis (-e)",
+    ],
+    type: "checkbox",
+    name: "aiFutureQuestion",
+  },
+  {
+    question:
+      "Vai Jūs uzskatāt, ka AI ir tehnoloģija, kas var kaut kā draudēt cilvēcībai?",
+    options: ["Jā", "Nē"],
+    type: "radio",
+    name: "aiDangerQuestion",
+  },
+  {
+    question:
+      "Vai Jūms ir kādas citas domas par AI, kas netika apskatītas šīs aptaujas ietvaros?",
+    options: [],
+    type: "input",
+    name: "aiFreeInputQuestion",
   },
 ];
 

@@ -2,11 +2,12 @@ import { cookies } from "next/headers";
 import { promises as fs } from "fs";
 import Nav from "@/components/nav";
 import LevelGroup from "@/components/levelGroup";
-import NotFound from "@/app/not-found";
 import { User, userRepo } from "@/schema/users";
 import { verifyJWT } from "@/lib/auth";
 import { Level } from "@/app/types/types";
-import "@/styles/globals.scss";
+import Maze from "@/logic/Maze";
+import Point from "@/logic/Point";
+import "@/styles/frame.scss";
 import "@/styles/level.scss";
 
 interface LevelPageParams {
@@ -17,45 +18,46 @@ interface LevelPageProps {
   params: LevelPageParams;
 }
 
-export async function generateStaticParams() {
-  const levels = await fs.readdir(`${process.cwd()}/public/maps/`);
-
-  return levels.map((fileName) => ({ id: fileName.charAt(0) }));
+interface LevelData {
+  start: number[];
+  finish: number[];
+  size: number[];
+  divisions: number;
 }
 
-async function getLevel(params: LevelPageParams) {
-  try {
-    const data = JSON.parse(
-      await fs.readFile(
-        `${process.cwd()}/public/maps/${params.id}.json`,
-        "utf8"
-      )
-    );
+export async function generateStaticParams() {
+  const { maps }: { maps: LevelData[] } = JSON.parse(
+    (await fs.readFile(`${process.cwd()}/public/maps/maps.json`)).toString()
+  );
 
-    const tokenData = await verifyJWT(cookies().get("jwtToken")!.value);
-    //@ts-expect-error
-    const userData: User = await userRepo.fetch(tokenData.userId!);
-
-    return {
-      level: data,
-      levelNum: params.id,
-      groupNum: tokenData.groupNum!,
-      st: userData.st,
-    };
-  } catch {
-    return {
-      level: { divisions: 0 },
-      levelNum: params.id,
-      groupNum: -1,
-      st: "default",
-    };
-  }
+  return maps.map((_level, idx) => ({ id: idx.toString() }));
 }
 
 export default async function Level({ params }: LevelPageProps) {
-  const { level, levelNum, groupNum, st } = await getLevel(params);
+  const { maps }: { maps: LevelData[] } = JSON.parse(
+    (await fs.readFile(`${process.cwd()}/public/maps/maps.json`)).toString()
+  );
 
-  if (level.divisions === 0) return <NotFound />;
+  const maze = new Maze({
+    size: new Point(
+      maps[parseInt(params.id) - 1].size[0],
+      maps[parseInt(params.id) - 1].size[1]
+    ),
+    start: new Point(
+      maps[parseInt(params.id) - 1].start[0],
+      maps[parseInt(params.id) - 1].start[1]
+    ),
+    targetPosition: new Point(
+      maps[parseInt(params.id) - 1].finish[0],
+      maps[parseInt(params.id) - 1].finish[1]
+    ),
+  });
+
+  const level = maze.generate();
+
+  const tokenData = await verifyJWT(cookies().get("jwtToken")!.value);
+  //@ts-expect-error
+  const userData: User = await userRepo.fetch(tokenData.userId!);
 
   return (
     <main>
@@ -64,9 +66,8 @@ export default async function Level({ params }: LevelPageProps) {
         <div className="frameFlexBox">
           <LevelGroup
             level={level}
-            levelNum={levelNum}
-            groupNum={groupNum}
-            st={st}
+            levelNum={params.id}
+            groupNum={tokenData.groupNum!}
           />
         </div>
       </div>

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Montserrat } from "next/font/google";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Player from "./player";
 import useKeyboardShortcut from "@/lib/useKeyboardShortcut";
 import validateLevel from "@/lib/validateLevel";
@@ -10,7 +10,6 @@ import { NewLevel } from "@/app/types/types";
 import { useWindowSize } from "@/lib/useWindowSize";
 import Loading from "@/app/loading";
 import LevelContainer from "@/logic/LevelContainer";
-import Brain from "@/logic/Brain";
 import Maze from "@/logic/Maze";
 import Point from "@/logic/Point";
 import "@/styles/frame.scss";
@@ -21,9 +20,9 @@ export default function FrameSandbox({ level }: { level: NewLevel }) {
   const maze = new Maze({
     size: new Point(Math.sqrt(level.divisions), Math.sqrt(level.divisions)),
     start: new Point(level.start[0], level.start[1]),
+    targetPosition: new Point(level.finish[0], level.finish[1]),
     level,
   });
-  maze.clear();
 
   const currentLevel = new LevelContainer({ ...level });
 
@@ -121,6 +120,7 @@ export default function FrameSandbox({ level }: { level: NewLevel }) {
           </div>
         );
       })}
+      <div style={{ width: "100px" }}></div>
       <button
         onClick={() => {
           setPath(maze.solve(position));

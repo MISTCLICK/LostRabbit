@@ -20,7 +20,7 @@ export async function PATCH(request: NextRequest) {
       await userRepo.save(req.userId, {
         userId: req.userId,
         groupNum: req.groupNum,
-        mazeResults: [],
+        mazeResults: new Array(20).fill(0),
         surveyAnswers: "",
         feedbackAnswers: "",
         iss: Date.now(),

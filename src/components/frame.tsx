@@ -3,22 +3,24 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Montserrat } from "next/font/google";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import useSound from "use-sound";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Player from "./player";
 import useKeyboardShortcut from "@/lib/useKeyboardShortcut";
 import validateLevel from "@/lib/validateLevel";
-import { Level } from "@/app/types/types";
+import { NewLevel } from "@/app/types/types";
 import { useWindowSize } from "@/lib/useWindowSize";
+import LevelContainer from "@/logic/LevelContainer";
 import Loading from "@/app/loading";
+import Maze from "@/logic/Maze";
+import Point from "@/logic/Point";
 
 interface FrameProps {
-  level: Level;
+  level: NewLevel;
   levelNum: string;
   groupNum: number;
-  st: string;
   currentTime: number;
   startTimer: () => void;
   stopTimer: () => void;
@@ -30,7 +32,6 @@ export default function Frame({
   level,
   levelNum,
   groupNum,
-  st,
   currentTime,
   startTimer,
   stopTimer,
@@ -39,14 +40,26 @@ export default function Frame({
     throw "Unable to render a number of divisions that is not a square.";
   }
 
+  const maze = new Maze({
+    size: new Point(Math.sqrt(level.divisions), Math.sqrt(level.divisions)),
+    start: new Point(level.start[0], level.start[1]),
+    targetPosition: new Point(level.finish[0], level.finish[1]),
+    level,
+  });
+
+  const currentLevel = new LevelContainer({ ...level });
+
   validateLevel(level);
 
   const [width, setWidth] = useState<number>(0);
-  const [coords, setCoords] = useState<number[]>(level.start);
+  const [position, setPosition] = useState<Point>(
+    new Point(maze.start.x, maze.start.y)
+  );
   const [frozen, setFrozen] = useState<boolean>(true);
   const [showStartScreen, setShowStartScreen] = useState<boolean>(true);
   const [startButtonClicked, setStartButtonClicked] = useState<boolean>(false);
   const [levelFinished, setLevelFinished] = useState<boolean>(false);
+  const [path, setPath] = useState<Point[]>([]);
   const [startButtonText, setStartButtonText] = useState<string>(
     parseInt(levelNum) === 1 ? "Sākt spēli" : "Sākt līmeni"
   );
@@ -66,8 +79,8 @@ export default function Frame({
   useEffect(() => {
     (async () => {
       if (
-        coords[0] === level.finish[0] &&
-        coords[1] === level.finish[1] &&
+        position.x === level.finish[0] &&
+        position.y === level.finish[1] &&
         !frozen
       ) {
         stopTimer();
@@ -91,9 +104,34 @@ export default function Frame({
         setLevelFinished(true);
       }
     })();
-  }, [coords, currentTime, frozen, level.finish, levelNum, router, stopTimer]);
+  }, [
+    position,
+    currentTime,
+    frozen,
+    level.finish,
+    levelNum,
+    router,
+    stopTimer,
+  ]);
 
-  let blockArray: number[] = [];
+  useEffect(() => {
+    setPath((prev) => {
+      const posInPath = prev.find(
+        (p) => p.x === position.x && p.y === position.y
+      );
+      if (posInPath) prev.splice(-1, 1);
+      return prev;
+    });
+
+    let t = setTimeout(() => {
+      setPath(
+        maze.solve(position).filter((_p, idx, arr) => idx >= arr.length - 10)
+      );
+    }, 3000);
+
+    return () => clearTimeout(t);
+  }, [position]);
+
   let blockWidth: number = width / Math.sqrt(level.divisions);
   let blockHeight: number = width / Math.sqrt(level.divisions);
 
@@ -126,76 +164,24 @@ export default function Frame({
     }, 3000);
   }
 
-  function movePlayer(shift: [number, number], layout: string[][]): void {
-    if (frozen) return;
-
-    let newCoords: [number, number] = [
-      coords[0] + shift[0],
-      coords[1] + shift[1],
-    ];
-
-    if (
-      coords[0] + shift[0] > Math.sqrt(level.divisions) - 1 ||
-      coords[1] + shift[1] > Math.sqrt(level.divisions) - 1 ||
-      coords[0] + shift[0] < 0 ||
-      coords[1] + shift[1] < 0
-    ) {
-      return;
-    }
-
-    if (
-      shift[0] === 0 &&
-      shift[1] === -1 &&
-      (layout[coords[0]][coords[1]].includes("T") ||
-        layout[newCoords[0]][newCoords[1]].includes("B"))
-    ) {
-      return;
-    }
-
-    if (
-      shift[0] === 0 &&
-      shift[1] === 1 &&
-      (layout[coords[0]][coords[1]].includes("B") ||
-        layout[newCoords[0]][newCoords[1]].includes("T"))
-    ) {
-      return;
-    }
-
-    if (
-      shift[0] === -1 &&
-      shift[1] === 0 &&
-      (layout[coords[0]][coords[1]].includes("L") ||
-        layout[newCoords[0]][newCoords[1]].includes("R"))
-    ) {
-      return;
-    }
-
-    if (
-      shift[0] === 1 &&
-      shift[1] === 0 &&
-      (layout[coords[0]][coords[1]].includes("R") ||
-        layout[newCoords[0]][newCoords[1]].includes("L"))
-    ) {
-      return;
-    }
-
-    setCoords(newCoords);
-  }
-
   function moveUp() {
-    movePlayer([0, -1], level.layout);
+    if (frozen) return;
+    currentLevel.movePlayer([position.x, position.y], [0, -1], setPosition);
   }
 
   function moveDown() {
-    movePlayer([0, 1], level.layout);
+    if (frozen) return;
+    currentLevel.movePlayer([position.x, position.y], [0, 1], setPosition);
   }
 
   function moveLeft() {
-    movePlayer([-1, 0], level.layout);
+    if (frozen) return;
+    currentLevel.movePlayer([position.x, position.y], [-1, 0], setPosition);
   }
 
   function moveRight() {
-    movePlayer([1, 0], level.layout);
+    if (frozen) return;
+    currentLevel.movePlayer([position.x, position.y], [1, 0], setPosition);
   }
 
   //Keyboard controls WASD
@@ -206,23 +192,9 @@ export default function Frame({
 
   //Keyboard controls ARROWS
   useKeyboardShortcut(["ArrowUp"], moveUp);
-  useKeyboardShortcut(["ArrowDown"], moveDown);
+  useKeyboardShortcut(["ArrowUp"], moveDown);
   useKeyboardShortcut(["ArrowLeft"], moveLeft);
   useKeyboardShortcut(["ArrowRight"], moveRight);
-
-  for (let i = 0; i < Math.sqrt(level.divisions); i++) {
-    blockArray.push(i);
-  }
-
-  function getClassName(cell: string): string {
-    let className = "block";
-    if (cell.includes("T")) className += " topBorder";
-    if (cell.includes("B")) className += " bottomBorder";
-    if (cell.includes("L")) className += " leftBorder";
-    if (cell.includes("R")) className += " rightBorder";
-
-    return className;
-  }
 
   if (width === 0) return <Loading />;
 
@@ -263,8 +235,8 @@ export default function Frame({
                   <Image
                     src="/images/bigCarrot.png"
                     alt="victory carrot"
-                    width={blockWidth}
-                    height={blockHeight}
+                    width={width / 13}
+                    height={width / 13}
                     style={{
                       marginRight: "2%",
                       marginLeft: "-3%",
@@ -284,14 +256,14 @@ export default function Frame({
                     <Image
                       src="/images/babyCarrot.png"
                       alt="victory carrot"
-                      width={blockWidth}
-                      height={blockHeight}
+                      width={width / 17}
+                      height={width / 17}
                       style={{
                         marginRight: "2%",
                         marginLeft: "-3%",
                       }}
                     />
-                    Ja apmaldisieties, burkāni-mazulīši parādīs Jums ceļu!
+                    Ja apmaldīsieties, burkāni-mazulīši parādīs Jums ceļu!
                   </p>
                 )}
               </div>
@@ -408,42 +380,62 @@ export default function Frame({
               </Button>
             </div>
           )}{" "}
-          {blockArray.map((row, rowId) => {
+          {maze.blocks.map((blockRow, rowIdx) => {
             return (
-              <div className="row" key={`${row}`}>
-                {blockArray.map((pos, posId) => {
+              <div key={`${rowIdx}-row`} className="row">
+                {blockRow.map((block: any, blockIdx: number) => {
+                  let className = "";
+
+                  for (const cName of block.classList.keys()) {
+                    className += `${cName} `;
+                  }
+
                   return (
                     <div
-                      className={`${getClassName(
-                        level.layout[rowId][posId]
-                      )} frame-block`}
-                      key={`${row}-${pos}`}
+                      key={`${blockIdx}-block`}
+                      className={className}
                       style={{
                         width: blockWidth,
                         height: blockHeight,
                         fontSize: 10,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
                       }}
                     >
-                      {row === coords[0] && pos === coords[1] ? (
+                      {rowIdx === position.x && blockIdx === position.y && (
                         <Player
                           width={blockWidth}
                           height={blockHeight}
                         ></Player>
-                      ) : (
-                        <></>
                       )}
 
-                      {row === level.finish[0] &&
-                        pos === level.finish[1] &&
+                      {rowIdx === level.finish[0] &&
+                        blockIdx === level.finish[1] &&
                         !(
-                          coords[0] === level.finish[0] &&
-                          coords[1] === level.finish[1]
+                          position.x === level.finish[0] &&
+                          position.y === level.finish[1]
                         ) && (
                           <Image
                             src="/images/bigCarrot.png"
                             alt="victory carrot"
                             width={blockWidth}
                             height={blockHeight}
+                          />
+                        )}
+
+                      {groupNum === 1 &&
+                        path.some((p) => p.x === rowIdx && p.y === blockIdx) &&
+                        !(position.x === rowIdx && position.y === blockIdx) &&
+                        !(
+                          rowIdx === level.finish[0] &&
+                          blockIdx === level.finish[1]
+                        ) && (
+                          <Image
+                            src="/images/babyCarrot.png"
+                            alt="baby path carrot"
+                            width={blockWidth / 1.6}
+                            height={blockHeight / 1.6}
                           />
                         )}
                     </div>

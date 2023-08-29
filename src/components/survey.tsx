@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 import { Montserrat } from "next/font/google";
 import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
@@ -37,6 +37,7 @@ interface SurveyProps {
 export default function Survey({ surveyQuestions, type }: SurveyProps) {
   const [selectValue, setSelectValue] = useState<string>("");
   const [radioHelperText, setRadioHelperText] = useState<string>("");
+  const [submitted, setSubmitted] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -66,8 +67,11 @@ export default function Survey({ surveyQuestions, type }: SurveyProps) {
                 });
                 break;
               default:
-                //@ts-expect-error
-                if (e.target[questionObj.name].value === "") {
+                if (
+                  //@ts-expect-error
+                  e.target[questionObj.name].value === "" &&
+                  questionObj.type !== "input"
+                ) {
                   setRadioHelperText("Atbilde šim jautājumam ir obligāta!");
                   return;
                 }
@@ -80,6 +84,8 @@ export default function Survey({ surveyQuestions, type }: SurveyProps) {
                 break;
             }
           }
+
+          setSubmitted(true);
 
           const res = await fetch("/api/survey", {
             method: "POST",
@@ -155,7 +161,7 @@ export default function Survey({ surveyQuestions, type }: SurveyProps) {
                       </>
                     ) : q.type === "checkbox" ? (
                       <FormGroup>
-                        {q.options.map((opt) => {
+                        {q.options.map((opt, idx) => {
                           return (
                             <div key={opt}>
                               <FormControlLabel
@@ -188,7 +194,7 @@ export default function Survey({ surveyQuestions, type }: SurveyProps) {
             <CopyrightIcon sx={{ m: 1 }} /> <p>Rīgas 80. vidusskola, 2023.</p>{" "}
           </div>
           <div>
-            <Button type="submit" variant="outlined">
+            <Button type="submit" variant="outlined" disabled={submitted}>
               {type === "survey" ? "Turpināt" : "Pabeigt eksperimentu"}
             </Button>
           </div>
