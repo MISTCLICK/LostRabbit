@@ -4,10 +4,9 @@ import useTimer from "@/lib/useTimer";
 import Frame from "./frame";
 import ControlsInfoCard from "./controlsInfoCard";
 import LevelInfoCard from "./levelInfoCard";
-import { Level } from "@/app/types/types";
 
 interface LevelGroupProps {
-  level: Level;
+  level: NewLevel;
   levelNum: string;
   groupNum: number;
 }

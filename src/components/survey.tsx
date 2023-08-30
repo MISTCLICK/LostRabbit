@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { type FormEvent, Suspense, useState } from "react";
 import { Montserrat } from "next/font/google";
 import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
@@ -15,7 +15,6 @@ import FormGroup from "@mui/material/FormGroup";
 import TextField from "@mui/material/TextField";
 import CopyrightIcon from "@mui/icons-material/Copyright";
 import SettingsEthernetIcon from "@mui/icons-material/SettingsEthernet";
-import type { SurveyAnswers, SurveySubmitEvent } from "@/app/types/types";
 import FormHelperText from "@mui/material/FormHelperText";
 import Loading from "@/app/loading";
 import "@/styles/survey.scss";
@@ -32,6 +31,13 @@ interface surveyQuestionObj {
 interface SurveyProps {
   surveyQuestions: surveyQuestionObj[];
   type: "survey" | "feedback";
+}
+
+//@ts-expect-error
+interface SurveySubmitEvent extends FormEvent<HTMLFormElement> {
+  target: {
+    [name: string]: HTMLAnswerValue | HTMLCheckboxesValues[];
+  };
 }
 
 export default function Survey({ surveyQuestions, type }: SurveyProps) {

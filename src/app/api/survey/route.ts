@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { SurveyAnswers } from "@/app/types/types";
 import { verifyJWT } from "@/lib/auth";
 import { userRepo } from "@/schema/users";
 

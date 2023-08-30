@@ -6,7 +6,6 @@ import { useState, useEffect, useRef } from "react";
 import Player from "./player";
 import useKeyboardShortcut from "@/lib/useKeyboardShortcut";
 import validateLevel from "@/lib/validateLevel";
-import { NewLevel } from "@/app/types/types";
 import { useWindowSize } from "@/lib/useWindowSize";
 import Loading from "@/app/loading";
 import LevelContainer from "@/logic/LevelContainer";

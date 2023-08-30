@@ -1,4 +1,3 @@
-import { NewLevel } from "@/app/types/types";
 import Point from "./Point";
 
 interface MazeOptions {

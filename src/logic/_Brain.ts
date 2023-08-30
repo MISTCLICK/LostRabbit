@@ -1,7 +1,6 @@
 import * as tf from "@tensorflow/tfjs";
 // import { promises as fs } from "fs";
 import type { SetStateAction } from "react";
-import { NewLevel } from "@/app/types/types";
 import LevelContainer from "./LevelContainer";
 import Point from "./Point";
 

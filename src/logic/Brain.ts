@@ -51,6 +51,7 @@ export default class Brain {
     visitedList: number[][],
     setVisitedList: (value: SetStateAction<number[][]>) => void
   ): number {
+    //@ts-expect-error
     const possibleDirections = this.getPossibleDirections(level.layout, coords);
 
     // const currentDiff = [
@@ -127,6 +128,7 @@ export default class Brain {
 
     if (Math.random() < this.epsilon) {
       const randDir = this.getRandomDirection(
+        //@ts-expect-error
         this.getPossibleDirections(level.layout, coords)
       );
 

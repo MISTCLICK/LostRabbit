@@ -1,5 +1,3 @@
-import type { FormEvent } from "react";
-
 type Level = {
   layout: string[][];
   start: number[];
@@ -65,17 +63,6 @@ interface HTMLCheckboxesValues {
   value: string;
   checked: boolean;
 }
-interface SurveySubmitEvent extends FormEvent<HTMLFormElement> {
-  target: {
-    ageQuestion: HTMLAnswerValue;
-    aiUseQuestion: HTMLAnswerValue;
-    aiTypesQuestion: HTMLCheckboxesValues[];
-    aiQuestion4: HTMLAnswerValue;
-    aiQuestion5: HTMLAnswerValue;
-  };
-}
-
-type SurveySubmitEvent = SurveySubmitEvent;
 
 interface Answer {
   question: string;

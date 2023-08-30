@@ -1,5 +1,3 @@
-import { NewLevel } from "../app/types/types";
-
 export default function validateLevel(level: NewLevel) {
   let totalLen = 0;
 

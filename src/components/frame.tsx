@@ -10,7 +10,6 @@ import Card from "@mui/material/Card";
 import Player from "./player";
 import useKeyboardShortcut from "@/lib/useKeyboardShortcut";
 import validateLevel from "@/lib/validateLevel";
-import { NewLevel } from "@/app/types/types";
 import { useWindowSize } from "@/lib/useWindowSize";
 import LevelContainer from "@/logic/LevelContainer";
 import Loading from "@/app/loading";
@@ -192,7 +191,7 @@ export default function Frame({
 
   //Keyboard controls ARROWS
   useKeyboardShortcut(["ArrowUp"], moveUp);
-  useKeyboardShortcut(["ArrowUp"], moveDown);
+  useKeyboardShortcut(["ArrowDown"], moveDown);
   useKeyboardShortcut(["ArrowLeft"], moveLeft);
   useKeyboardShortcut(["ArrowRight"], moveRight);
 

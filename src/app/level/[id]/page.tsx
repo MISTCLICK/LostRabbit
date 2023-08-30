@@ -4,11 +4,12 @@ import Nav from "@/components/nav";
 import LevelGroup from "@/components/levelGroup";
 import { User, userRepo } from "@/schema/users";
 import { verifyJWT } from "@/lib/auth";
-import { Level } from "@/app/types/types";
 import Maze from "@/logic/Maze";
 import Point from "@/logic/Point";
 import "@/styles/frame.scss";
 import "@/styles/level.scss";
+
+export const dynamic = "force-dynamic";
 
 interface LevelPageParams {
   id: string;
