@@ -7,12 +7,13 @@ import Maze from "@/logic/Maze";
 import Point from "@/logic/Point";
 // import "@/styles/globals.scss";
 import "@/styles/level.scss";
+// import { QBrain } from "@/logic/Brain";
 
 //! DEPRECATED STATIC LEVEL LOADING;
 async function getLevel() {
   try {
     const data = JSON.parse(
-      await fs.readFile(`${process.cwd()}/public/maps/_10.json`, "utf8")
+      await fs.readFile(`${process.cwd()}/level_backup/_10.json`, "utf8")
     );
 
     const tokenData = await verifyJWT(cookies().get("jwtToken")!.value);
@@ -36,12 +37,13 @@ async function getLevel() {
 }
 
 export default async function SandBoxPage() {
-  const maze = new Maze({
-    size: new Point(40, 40),
-    start: new Point(0, 0),
-    // targetPosition: new Point(19, 10),
-  });
-  const level = maze.generate();
+  const { level } = await getLevel();
+
+  // const maze = new Maze({
+  //   size: new Point(10, 10),
+  //   start: new Point(0, 0),
+  //   // targetPosition: new Point(19, 10),
+  // });
 
   return (
     <main>

@@ -23,12 +23,14 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+level_backup
 
 # local env files
 .env*.local
 
-#Dockerfile
+#Dockerfile and images
 Dockerfile
+*.tar
 
 # vercel
 .vercel

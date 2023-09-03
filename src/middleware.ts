@@ -15,7 +15,7 @@ export async function middleware(req: NextRequest) {
 
     if (!tokenData.success) return NextResponse.redirect(new URL("/", req.url));
 
-    const res = await fetch(`${process.env.BASE_URL}/api/user`, {
+    const res = await fetch(`http://${req.nextUrl.host}/api/user`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -39,14 +39,17 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  if (req.nextUrl.pathname.startsWith("/api")) {
-    if (!req.headers.get("referer")?.includes(process.env.BASE_URL as string)) {
-      return NextResponse.json(
-        { message: "401 Unauthorized" },
-        { status: 401 }
-      );
-    }
-  }
+  // if (req.nextUrl.pathname.startsWith("/api")) {
+  //   if (
+  //     !req.headers.get("referer")?.includes(req.nextUrl.host) ||
+  //     req.nextUrl.host === "0.0.0.0:3000"
+  //   ) {
+  //     return NextResponse.json(
+  //       { message: "401 Unauthorized" },
+  //       { status: 401 }
+  //     );
+  //   }
+  // }
 
   return NextResponse.next();
 }
