@@ -61,7 +61,7 @@ export default function FeedbackPage() {
           <div className={`${montserrat.className} q-box`}>
             <div className="question">Atgriezeniskās saites aptauja</div>
             <div className="options">
-              Mums ir svarīgs jŭsu viedoklis par eksperimenta gaitu un citiem
+              Mums ir svarīgs jūsu viedoklis par eksperimenta gaitu un citiem
               jautājumiem, kas saistīti ar AI.
             </div>
           </div>

@@ -88,8 +88,10 @@ export default async function FinalCard({ userData }: { userData: User }) {
                   className={monospace.className}
                   style={{
                     fontSize: "80%",
+                    flexWrap: "wrap",
+                    overflowX: "auto",
+                    whiteSpace: "pre-wrap",
                     wordWrap: "break-word",
-                    wordBreak: "break-word",
                   }}
                 >
                   {formattedUserData}

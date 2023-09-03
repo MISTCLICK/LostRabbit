@@ -26,6 +26,7 @@ export default function CopyButton({
         buttonPressed
           ? {
               height: "4ch",
+              width: "30ch",
 
               backgroundColor: "green",
               ":hover": {
@@ -34,6 +35,7 @@ export default function CopyButton({
             }
           : {
               height: "4ch",
+              width: "30ch",
             }
       }
       variant="contained"

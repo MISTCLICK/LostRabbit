@@ -77,7 +77,8 @@ export default function Terms({ chipText }: { chipText: string }) {
                 laiks, kas eksperimenta dalībnieks pavadījis, piedaloties
                 eksperimentā
               </i>
-              .
+              . Eksperimenta dalībnieku autorizācijai tiek izmantotas sīkdatnes
+              (cookies).
             </p>
             <br />
 
