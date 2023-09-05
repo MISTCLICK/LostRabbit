@@ -48,7 +48,7 @@ export default function Terms({ chipText }: { chipText: string }) {
               1.1. Šajā privātuma un datu apstrādes politikā tiek apskatīti datu
               apsardzes jautājumi, kas saistīti ar Rīgas 80. vidusskolas
               zinātniski pētnieciska darba {`"`}MĀKSLĪGĀ INTELEKTA PALĪDZĪBAS
-              IETEKME UZ CILVĒKA PROBLĒMU RISINĀŠANAS PRODUKTIVITĀTI UN
+              IETEKME UZ CILVĒKA PROBLĒMRISINĀŠANAS PRODUKTIVITĀTI UN
               EFEKTIVITĀTI{`"`} eksperimentu programmēšanas jomā.
             </p>
             <br />

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { verifyJWT } from "./lib/auth";
-import { User } from "./schema/users";
+import { User, userRepo } from "./schema/users";
 import getCorrectPath from "./lib/getCorrectPath";
 
 export async function middleware(req: NextRequest) {
@@ -38,18 +38,6 @@ export async function middleware(req: NextRequest) {
     console.error(e);
     return NextResponse.redirect(new URL("/", req.url));
   }
-
-  // if (req.nextUrl.pathname.startsWith("/api")) {
-  //   if (
-  //     !req.headers.get("referer")?.includes(req.nextUrl.host) ||
-  //     req.nextUrl.host === "0.0.0.0:3000"
-  //   ) {
-  //     return NextResponse.json(
-  //       { message: "401 Unauthorized" },
-  //       { status: 401 }
-  //     );
-  //   }
-  // }
 
   return NextResponse.next();
 }
