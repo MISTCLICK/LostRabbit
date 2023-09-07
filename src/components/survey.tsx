@@ -50,14 +50,16 @@ export default function Survey({ surveyQuestions, type }: SurveyProps) {
                 let checkedBoxes: string[] = [];
                 //@ts-expect-error
                 e.target[questionObj.name].forEach((element) => {
-                  if (element.checked && element.type === "checkbox")
+                  if (element.checked && element.type === "checkbox") {
                     checkedBoxes.push(element.value);
+                  }
                   if (
                     element.type === "textarea" &&
                     element.value &&
                     !element.disabled
-                  )
+                  ) {
                     checkedBoxes.push(element.value);
+                  }
                 });
 
                 if (checkedBoxes.length === 0) checkedBoxes.push("NULL");
