@@ -75,6 +75,7 @@ const surveyQuestions = [
       "Informācijas meklēšana",
       "Programmēšana",
       "Atpūta (jebkāda)",
+      "$OTHER",
     ],
     type: "checkbox",
     name: "aiAimsQuestion",
@@ -96,9 +97,10 @@ const surveyQuestions = [
       "Mākslinieks (-ce)",
       "Tiesnesis (-se) / Advokāts (-e)",
       "Uzņēmuma valdes loceklis (-e)",
+      "$OTHER",
     ],
     type: "checkbox",
-    name: "aiFutureQuestion",
+    name: "aiProfessionsQuestion",
   },
   {
     question:
@@ -106,13 +108,6 @@ const surveyQuestions = [
     options: ["Jā", "Nē"],
     type: "radio",
     name: "aiDangerQuestion",
-  },
-  {
-    question:
-      "Vai Jūms ir kādas citas domas par AI, kas netika apskatītas šīs aptaujas ietvaros?",
-    options: [],
-    type: "input",
-    name: "aiFreeInputQuestion",
   },
 ];
 

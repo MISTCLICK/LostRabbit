@@ -18,20 +18,16 @@ const surveyQuestions = [
     options: [
       "Eksperimenta gaitā man bija nepieciešama ārēja palīdzība",
       "Eksperimenta gaita bija saprotama un vienkārša",
+      "Eksperimenta vietnes saskarne man kā lietotājam bija viegli saprotama",
       "Es sapratu AI izmantošanas ideju problēmu risināšanai",
+      "Man bija interesanti piedalīties eksperimentā",
     ],
     type: "checkbox",
     name: "feedbackStatementsQuestion",
   },
   {
-    question: "Cik interesanti jums bija piedalīties eksperimentā?",
-    options: ["Ļoti interesanti", "Interesanti", "Neinteresanti", "Garlaicīgi"],
-    type: "radio",
-    name: "feedbackComplexityQuestion",
-  },
-  {
     question:
-      "Vai Jūs gribētu kaut ko piebilst? Jūsu viedoklis ir patiešām svarīgs!",
+      "Vai Jūs gribētu kaut ko piebilst? Jūsu viedoklis, kā arī priekšlikumi mums ir patiešām svarīgi!",
     options: [],
     type: "input",
     name: "feedbackFreeInputQuestion",

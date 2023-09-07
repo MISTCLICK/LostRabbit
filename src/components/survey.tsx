@@ -4,32 +4,20 @@ import { type FormEvent, Suspense, useState } from "react";
 import { Montserrat } from "next/font/google";
 import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import RadioGroup from "@mui/material/RadioGroup";
-import Radio from "@mui/material/Radio";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import FormGroup from "@mui/material/FormGroup";
-import TextField from "@mui/material/TextField";
 import CopyrightIcon from "@mui/icons-material/Copyright";
 import SettingsEthernetIcon from "@mui/icons-material/SettingsEthernet";
-import FormHelperText from "@mui/material/FormHelperText";
 import Loading from "@/app/loading";
+import SurveyRadio from "./surveyRadio";
+import SurveyInput from "./surveyInput";
+import SurveyCheckboxes from "./surveyCheckboxes";
+import SurveyDropdown from "./surveyDropdown";
 import "@/styles/survey.scss";
 
 const montserrat = Montserrat({ subsets: ["latin-ext"], weight: "400" });
 
-interface surveyQuestionObj {
-  question: string;
-  options: string[];
-  type: string;
-  name: string;
-}
-
 interface SurveyProps {
-  surveyQuestions: surveyQuestionObj[];
+  surveyQuestions: SurveyQuestion[];
   type: "survey" | "feedback";
 }
 
@@ -41,7 +29,6 @@ interface SurveySubmitEvent extends FormEvent<HTMLFormElement> {
 }
 
 export default function Survey({ surveyQuestions, type }: SurveyProps) {
-  const [selectValue, setSelectValue] = useState<string>("");
   const [radioHelperText, setRadioHelperText] = useState<string>("");
   const [submitted, setSubmitted] = useState<boolean>(false);
 
@@ -63,7 +50,14 @@ export default function Survey({ surveyQuestions, type }: SurveyProps) {
                 let checkedBoxes: string[] = [];
                 //@ts-expect-error
                 e.target[questionObj.name].forEach((element) => {
-                  if (element.checked) checkedBoxes.push(element.value);
+                  if (element.checked && element.type === "checkbox")
+                    checkedBoxes.push(element.value);
+                  if (
+                    element.type === "textarea" &&
+                    element.value &&
+                    !element.disabled
+                  )
+                    checkedBoxes.push(element.value);
                 });
 
                 if (checkedBoxes.length === 0) checkedBoxes.push("NULL");
@@ -107,13 +101,14 @@ export default function Survey({ surveyQuestions, type }: SurveyProps) {
           if (!res.ok) {
             return router.replace("/");
           }
+
           type === "survey"
             ? router.replace("/level/1")
             : router.replace("/results");
           return;
         }}
       >
-        <>
+        <div>
           {surveyQuestions.map((q) => {
             return (
               <Box
@@ -129,72 +124,20 @@ export default function Survey({ surveyQuestions, type }: SurveyProps) {
                   <div className="question">{q.question}</div>
                   <div className="options">
                     {q.type === "radio" ? (
-                      <>
-                        <RadioGroup name={q.question}>
-                          {q.options.map((opt) => {
-                            return (
-                              <FormControlLabel
-                                key={opt}
-                                value={opt}
-                                control={<Radio />}
-                                label={opt}
-                                name={q.name}
-                              />
-                            );
-                          })}
-                        </RadioGroup>
-                        <FormHelperText error>{radioHelperText}</FormHelperText>
-                      </>
+                      <SurveyRadio q={q} radioHelperText={radioHelperText} />
                     ) : q.type === "dropdown" ? (
-                      <>
-                        <Select
-                          value={selectValue}
-                          onChange={(e) => {
-                            setSelectValue(e.target.value);
-                          }}
-                          sx={{ minWidth: 150 }}
-                          name={q.name}
-                          required
-                        >
-                          {q.options.map((opt) => {
-                            return (
-                              <MenuItem key={opt} value={opt}>
-                                {opt}
-                              </MenuItem>
-                            );
-                          })}
-                        </Select>
-                      </>
+                      <SurveyDropdown q={q} />
                     ) : q.type === "checkbox" ? (
-                      <FormGroup>
-                        {q.options.map((opt, idx) => {
-                          return (
-                            <div key={opt}>
-                              <FormControlLabel
-                                control={<Checkbox value={opt} name={q.name} />}
-                                label={opt}
-                              />
-                              <br></br>
-                            </div>
-                          );
-                        })}
-                      </FormGroup>
+                      <SurveyCheckboxes q={q} />
                     ) : (
-                      <TextField
-                        fullWidth
-                        multiline
-                        variant="outlined"
-                        sx={montserrat.style}
-                        type="text"
-                        name={q.name}
-                      />
+                      <SurveyInput q={q} />
                     )}
                   </div>
                 </div>
               </Box>
             );
           })}
-        </>
+        </div>
         <footer className={`surveyFoot ${montserrat.className}`}>
           <div>
             <CopyrightIcon sx={{ m: 1 }} /> <p>Rīgas 80. vidusskola, 2023.</p>{" "}

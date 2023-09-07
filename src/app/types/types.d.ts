@@ -70,3 +70,10 @@ interface Answer {
 }
 
 type SurveyAnswers = Answer[];
+
+type SurveyQuestion = {
+  question: string;
+  options: string[];
+  type: string;
+  name: string;
+};
