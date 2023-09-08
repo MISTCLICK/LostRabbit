@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { verifyJWT } from "./lib/auth";
-import { User, userRepo } from "./schema/users";
+import { User } from "./schema/users";
 import getCorrectPath from "./lib/getCorrectPath";
 
 export async function middleware(req: NextRequest) {
@@ -15,16 +15,21 @@ export async function middleware(req: NextRequest) {
 
     if (!tokenData.success) return NextResponse.redirect(new URL("/", req.url));
 
-    const res = await fetch(`http://${req.nextUrl.host}/api/user`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: tokenData.userId,
-        groupNum: tokenData.groupNum,
-      }),
-    });
+    const res = await fetch(
+      `${process.env.NODE_ENV === "production" ? "https" : "http"}://${
+        req.nextUrl.host
+      }/api/user`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: tokenData.userId,
+          groupNum: tokenData.groupNum,
+        }),
+      }
+    );
 
     if (!req.nextUrl.pathname.startsWith("/api")) {
       const { st }: User = (await res.json()).user;
