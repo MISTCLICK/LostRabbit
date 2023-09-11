@@ -1,12 +1,12 @@
 import { cookies } from "next/headers";
 import { promises as fs } from "fs";
-import path from "path";
 import Nav from "@/components/nav";
 import LevelGroup from "@/components/levelGroup";
 import { User, userRepo } from "@/schema/users";
 import { verifyJWT } from "@/lib/auth";
 import Maze from "@/logic/Maze";
 import Point from "@/logic/Point";
+import { maps } from "./maps.json";
 import "@/styles/frame.scss";
 import "@/styles/level.scss";
 
@@ -28,22 +28,10 @@ interface LevelData {
 }
 
 export async function generateStaticParams() {
-  const { maps }: { maps: LevelData[] } = JSON.parse(
-    await fs
-      .readFile(path.join(process.cwd(), "public", "maps", "maps.json"))
-      .toString()
-  );
-
   return maps.map((_level, idx) => ({ id: idx.toString() }));
 }
 
 export default async function Level({ params }: LevelPageProps) {
-  const { maps }: { maps: LevelData[] } = JSON.parse(
-    await fs
-      .readFile(path.join(process.cwd(), "public", "maps", "maps.json"))
-      .toString()
-  );
-
   const maze = new Maze({
     size: new Point(
       maps[parseInt(params.id) - 1].size[0],
