@@ -27,6 +27,7 @@ level_backup
 
 # local env files
 .env*.local
+.env*.off
 
 #Dockerfile and images
 Dockerfile

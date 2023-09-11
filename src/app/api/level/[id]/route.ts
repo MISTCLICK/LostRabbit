@@ -9,14 +9,6 @@ interface LevelReqParams {
   };
 }
 
-export async function GET(request: NextRequest, { params }: LevelReqParams) {
-  const data = JSON.parse(
-    await fs.readFile(`${process.cwd()}/public/maps/${params.id}.json`, "utf8")
-  );
-
-  return NextResponse.json({ success: true, level: data });
-}
-
 export async function POST(request: NextRequest, { params }: LevelReqParams) {
   try {
     if (!request.cookies.has("jwtToken")) {
