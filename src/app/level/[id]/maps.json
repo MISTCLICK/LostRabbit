@@ -1,0 +1,124 @@
+{
+  "maps": [
+    {
+      "start": [0, 0],
+      "finish": [15, 15],
+      "size": [16, 16],
+      "divisions": 256
+    },
+    {
+      "start": [0, 0],
+      "finish": [19, 19],
+      "size": [20, 20],
+      "divisions": 400
+    },
+    {
+      "start": [0, 0],
+      "finish": [19, 19],
+      "size": [20, 20],
+      "divisions": 400
+    },
+    {
+      "start": [0, 0],
+      "finish": [19, 19],
+      "size": [20, 20],
+      "divisions": 400
+    },
+    {
+      "start": [0, 0],
+      "finish": [19, 19],
+      "size": [20, 20],
+      "divisions": 400
+    },
+    {
+      "start": [24, 24],
+      "finish": [0, 0],
+      "size": [25, 25],
+      "divisions": 625
+    },
+    {
+      "start": [24, 24],
+      "finish": [0, 0],
+      "size": [25, 25],
+      "divisions": 625
+    },
+    {
+      "start": [24, 24],
+      "finish": [0, 0],
+      "size": [25, 25],
+      "divisions": 625
+    },
+    {
+      "start": [0, 12],
+      "finish": [24, 12],
+      "size": [25, 25],
+      "divisions": 625
+    },
+    {
+      "start": [24, 12],
+      "finish": [0, 12],
+      "size": [25, 25],
+      "divisions": 625
+    },
+    {
+      "start": [0, 0],
+      "finish": [29, 29],
+      "size": [30, 30],
+      "divisions": 900
+    },
+    {
+      "start": [29, 29],
+      "finish": [0, 0],
+      "size": [30, 30],
+      "divisions": 900
+    },
+    {
+      "start": [0, 0],
+      "finish": [29, 29],
+      "size": [30, 30],
+      "divisions": 900
+    },
+    {
+      "start": [29, 29],
+      "finish": [0, 0],
+      "size": [30, 30],
+      "divisions": 900
+    },
+    {
+      "start": [0, 0],
+      "finish": [29, 29],
+      "size": [30, 30],
+      "divisions": 900
+    },
+    {
+      "start": [0, 0],
+      "finish": [34, 34],
+      "size": [35, 35],
+      "divisions": 1225
+    },
+    {
+      "start": [0, 0],
+      "finish": [34, 34],
+      "size": [35, 35],
+      "divisions": 1225
+    },
+    {
+      "start": [0, 34],
+      "finish": [34, 0],
+      "size": [35, 35],
+      "divisions": 1225
+    },
+    {
+      "start": [0, 0],
+      "finish": [39, 39],
+      "size": [40, 40],
+      "divisions": 1600
+    },
+    {
+      "start": [39, 39],
+      "finish": [0, 0],
+      "size": [40, 40],
+      "divisions": 1600
+    }
+  ]
+}
