@@ -28,7 +28,7 @@ interface LevelData {
 
 export async function generateStaticParams() {
   const { maps }: { maps: LevelData[] } = JSON.parse(
-    (await fs.readFile(`maps.json`)).toString()
+    (await fs.readFile(`./maps.json`)).toString()
   );
 
   return maps.map((_level, idx) => ({ id: idx.toString() }));
@@ -36,7 +36,7 @@ export async function generateStaticParams() {
 
 export default async function Level({ params }: LevelPageProps) {
   const { maps }: { maps: LevelData[] } = JSON.parse(
-    (await fs.readFile(`maps.json`)).toString()
+    (await fs.readFile(`./maps.json`)).toString()
   );
 
   const maze = new Maze({
