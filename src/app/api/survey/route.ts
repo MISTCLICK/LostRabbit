@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { promises as fs } from "fs";
 import { verifyJWT } from "@/lib/auth";
 import { userRepo } from "@/schema/users";
 
@@ -37,6 +38,8 @@ export async function POST(request: NextRequest) {
     } else {
       user.feedbackAnswers = JSON.stringify(answers);
       user.st = "/results";
+
+      await fs.appendFile(`usersBC.json`, JSON.stringify(user, null, 2));
     }
     await userRepo.save(user);
 
