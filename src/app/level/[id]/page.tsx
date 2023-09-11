@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { promises as fs } from "fs";
+import path from "path";
 import Nav from "@/components/nav";
 import LevelGroup from "@/components/levelGroup";
 import { User, userRepo } from "@/schema/users";
@@ -28,7 +29,9 @@ interface LevelData {
 
 export async function generateStaticParams() {
   const { maps }: { maps: LevelData[] } = JSON.parse(
-    (await fs.readFile(`./maps.json`)).toString()
+    await fs
+      .readFile(path.join(process.cwd(), "public", "maps", "maps.json"))
+      .toString()
   );
 
   return maps.map((_level, idx) => ({ id: idx.toString() }));
@@ -36,7 +39,9 @@ export async function generateStaticParams() {
 
 export default async function Level({ params }: LevelPageProps) {
   const { maps }: { maps: LevelData[] } = JSON.parse(
-    (await fs.readFile(`./maps.json`)).toString()
+    await fs
+      .readFile(path.join(process.cwd(), "public", "maps", "maps.json"))
+      .toString()
   );
 
   const maze = new Maze({
