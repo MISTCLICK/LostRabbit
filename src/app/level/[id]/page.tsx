@@ -1,5 +1,4 @@
 import { cookies } from "next/headers";
-import { promises as fs } from "fs";
 import Nav from "@/components/nav";
 import LevelGroup from "@/components/levelGroup";
 import { User, userRepo } from "@/schema/users";
