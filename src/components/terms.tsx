@@ -133,9 +133,7 @@ export default function Terms({ chipText }: { chipText: string }) {
               4.4. Eksperimenta dalībniekam ir tiesības uzdot jautājumus un
               pieprasīt plašāku informāciju no eksperimenta organizatoriem. To
               var izdarīt pa e-pastu:{" "}
-              <Link href="mailto:mistclick.a@gmail.com">
-                mistclick.a@gmail.com
-              </Link>
+              <Link href="mailto:mistclick.a@gmail.com">ari@mistclick.me</Link>
             </p>
             <br />
           </div>

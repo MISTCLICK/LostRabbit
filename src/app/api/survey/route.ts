@@ -38,8 +38,6 @@ export async function POST(request: NextRequest) {
     } else {
       user.feedbackAnswers = JSON.stringify(answers);
       user.st = "/results";
-
-      await fs.appendFile(`usersBC.json`, JSON.stringify(user, null, 2));
     }
     await userRepo.save(user);
 
