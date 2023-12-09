@@ -1,13 +1,8 @@
 import Image from "next/image";
-import { cookies } from "next/headers";
 import { Montserrat } from "next/font/google";
 import localFont from "next/font/local";
 import Divider from "@mui/material/Divider";
-import { v4 as uuidv4 } from "uuid";
 import Terms from "@/components/terms";
-import StartButton from "@/components/startBtn";
-import { userRepo } from "@/schema/users";
-import { genUserToken, verifyJWT } from "@/lib/auth";
 import "@/styles/globals.scss";
 import "@/styles/index.scss";
 
