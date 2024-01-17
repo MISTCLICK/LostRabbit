@@ -33,14 +33,14 @@ export default async function Main() {
             <br />
             Diemžēl, eksperiments bija pieejams tikai periodā no 11.09.2023.
             līdz 11.12.2023. un jau ir beidzies. Paldies visiem{" "}
-            <b>340 dalībniekiem</b>, kas piedalījās eksperimentā.
+            <b>359 dalībniekiem</b>, kas piedalījās eksperimentā.
             <br />
             <br />
-            Šis pētnieciskais darbs tiks pabeigts līdz 2024. gada maijam.
-            Atgādinam, ka visi savākti dati tiks izmantoti saskaņā ar
-            <Terms chipText="mūsu privātuma un datu apstrādes politiku." />
+            Šis pētnieciskais darbs tiks pabeigts līdz 2024. gada februārim.
+            Atgādinam, ka visi iegūtie dati tiks izmantoti atbilstoši
+            <Terms chipText="mūsu privātuma un datu apstrādes politikai." />
             <br />
-            <i>Efektīvā redakcija no 09.12.2023.</i>
+            <i>Efektīvā redakcija no 17.01.2024.</i>
             <br />
             <br />
             Pētniecības komanda izsaka savu pateicību{" "}
