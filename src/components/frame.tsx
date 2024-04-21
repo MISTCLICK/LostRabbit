@@ -217,7 +217,7 @@ export default function Frame({
             <div className={`${montserrat.className} levelStartCard`}>
               <p>Šī eksperimenta daļa sastāv no 20 labirintiem.</p>
               <p>
-                Pa kreisi tiks rādīta informācija par šo līmeni un laiks, kas
+                Pa kreisi tiek rādīta informācija par šo līmeni un laiks, kas
                 pagājis no līmeņa sākuma.
               </p>
               <p>
@@ -241,7 +241,7 @@ export default function Frame({
                       marginLeft: "-3%",
                     }}
                   />
-                  Lai pabeigtu līmeni, ir jānotiek līdz lielajam burkānam.{" "}
+                  Lai pabeigtu līmeni, ir jāsasniedz lielajo burkānu.{" "}
                 </p>{" "}
                 {groupNum === 1 && (
                   <p

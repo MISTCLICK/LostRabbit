@@ -48,7 +48,7 @@ export default function LevelInfoCard({
           Katram līmenim tiek dots tikai <b style={{ color: "red" }}>viens</b>{" "}
           mēģinājums. Ja mājaslapa tiks atjaunota (refresh poga) vai citādi
           mainīta pēc līmeņa sākuma, līmenis netiks ieskaitīts un Jūs nokļūsiet
-          nākamajā līmenī.
+          nākamā līmeņa vietnē.
         </h4>
       </Card>
     </div>

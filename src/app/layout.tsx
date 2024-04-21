@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -6,6 +7,8 @@ export const metadata: Metadata = {
   description:
     "Rīgas 80. vidusskolas 12.b klases pētnieciskā darba eksperiments programmēšanas jomā.",
 };
+
+const montserrat = Montserrat({ subsets: ["latin-ext"], weight: "400" });
 
 export default function RootLayout({
   children,
@@ -17,7 +20,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" />
       </head>
-      <body>{children}</body>
+      <body className={montserrat.className}>{children}</body>
     </html>
   );
 }
